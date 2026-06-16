@@ -50,11 +50,11 @@ public class Usuario {
 
     @NotBlank
     @Size(min = 8, max = 14, message = "El télefono debe tener un mínimo de 8 caracteres")
-    @Column(nullable = false, length = 14, unique = true)
+    @Column(nullable = false, length = 14, unique = false)
     private String telefono;
 
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     @Email 
     private String correo;
 
@@ -62,9 +62,8 @@ public class Usuario {
     @Column(nullable = false)
     private Long direccionId;
 
-    @NotBlank
-    @Size(min = 8, max = 60, message = "La contraseña debe tener un mínimo de 8 caracteres")
-    @Column(nullable = false)
+
+    @Column(nullable = true)
     private String contrasena;
 
     

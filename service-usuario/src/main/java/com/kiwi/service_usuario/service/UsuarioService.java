@@ -7,26 +7,66 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kiwi.service_usuario.model.Usuario;
+import com.kiwi.service_usuario.model.UsuarioRol;
 import com.kiwi.service_usuario.repository.UsuarioRepository;
+import com.kiwi.service_usuario.repository.UsuarioRolRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioService {
     @Autowired
     private UsuarioRepository usRep;
+    @Autowired
+    private UsuarioRolRepository uRolRep;
 
     public List<Usuario> listarTodos(){
         return usRep.findAll();
     }
 
-    public Usuario crear(Usuario us){
-        if(usRep.existsByRut(us.getRut())){
-            throw new RuntimeException("El usuario ya existe");
+    @Transactional
+    public Usuario crear(Usuario us) {
+        Optional<Usuario> usuarioOpt = usRep.findByRut(us.getRut());
+        
+        if (usuarioOpt.isPresent()) {
+            Usuario usuarioExistente = usuarioOpt.get();
+            
+            if (usuarioExistente.getContrasena() == null && us.getContrasena() != null && !us.getContrasena().trim().isEmpty()) {
+                usuarioExistente.setContrasena(us.getContrasena());
+                usuarioExistente.setSnombre(us.getSnombre());
+                usuarioExistente.setApmaterno(us.getApmaterno());
+                
+                UsuarioRol ascensoRol = new UsuarioRol();
+                ascensoRol.setUsuarioId(usuarioExistente.getId());
+                ascensoRol.setRolId(3L); 
+                uRolRep.save(ascensoRol);
+            } else {
+                usuarioExistente.setTelefono(us.getTelefono());
+                usuarioExistente.setCorreo(us.getCorreo());
+            }
+            return usRep.save(usuarioExistente);
         }
-        return usRep.save(us);
+        
+        // 2. SI EL USUARIO ES 100% NUEVO (Tu lógica original intacta)
+        Usuario usuarioGuardado = usRep.save(us);
+        
+        UsuarioRol nuevoUsuarioRol = new UsuarioRol();
+        nuevoUsuarioRol.setUsuarioId(usuarioGuardado.getId());
+        
+        if (us.getContrasena() != null && !us.getContrasena().trim().isEmpty()) {
+            nuevoUsuarioRol.setRolId(3L); // Rol 3: Registro formal
+        } else {
+            nuevoUsuarioRol.setRolId(4L); // Rol 4: Invitado
+        }
+        uRolRep.save(nuevoUsuarioRol);
+        
+        return usuarioGuardado;
     }
 
+
+
     public Optional<Usuario> buscarPorId(Long id){
-    return usRep.findById(id);
+        return usRep.findById(id);
     }
 
     public Optional<Usuario> buscarPorRut(String rut){
