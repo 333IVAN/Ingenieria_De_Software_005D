@@ -1,4 +1,4 @@
-# 🧩 Sistema de Microservicios Kiwi
+# 🧩 Sistema Web Kiwi
 
 <p align="center">
   <strong>Backend de microservicios para gestión de usuarios, direcciones, donaciones y eventos</strong><br/>
