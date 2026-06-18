@@ -1,0 +1,52 @@
+package com.kiwi.service_mascota.model;
+
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "Adopcion")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Adopcion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate fechaAdopcion;
+
+    @NotNull
+    @Column(name = "mascota_id", nullable = false)
+    private Long mascotaId;
+
+    @Transient
+    private Mascota mascota;
+
+    @Column(name = "adoptante_id", nullable = false)
+    private Long adoptanteId;
+
+    @Transient 
+    private UsuarioDTO adoptante;
+
+    @Column(name = "voluntario_id")
+    private Long voluntarioId;
+
+    @Transient 
+    private UsuarioDTO voluntario;
+}

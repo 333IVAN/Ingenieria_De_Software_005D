@@ -1,0 +1,115 @@
+package com.kiwi.service_mascota.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import com.kiwi.service_mascota.model.Adopcion;
+import com.kiwi.service_mascota.model.Mascota;
+import com.kiwi.service_mascota.model.UsuarioDTO;
+import com.kiwi.service_mascota.repository.AdopcionRepository;
+import com.kiwi.service_mascota.repository.MascotaRepository;
+
+@Service
+public class AdopcionService {
+    @Autowired
+    private AdopcionRepository adRep;
+    @Autowired
+    private MascotaRepository masRep;
+    @Autowired
+    private WebClient web;
+
+
+    public List<Adopcion> listarTodos(){
+        return adRep.findAll();
+    }
+
+    public Adopcion crear(Adopcion nueva) {
+    Mascota mascotaReal = masRep.findById(nueva.getMascotaId())
+        .orElseThrow(() -> new RuntimeException("La mascota no existe"));
+    nueva.setMascota(mascotaReal);
+    try {
+        UsuarioDTO adoptanteDTO = web.get()
+            .uri("/usuarios/{id}", nueva.getAdoptanteId())
+            .retrieve()
+            .bodyToMono(UsuarioDTO.class)
+            .block();
+        nueva.setAdoptante(adoptanteDTO);
+    } catch (Exception e) {
+        throw new RuntimeException("No se pudo validar al adoptante");
+    }
+    if (nueva.getVoluntarioId() != null) {
+        try {
+            UsuarioDTO voluntarioDTO = web.get()
+                .uri("/usuarios/{id}", nueva.getVoluntarioId())
+                .retrieve()
+                .bodyToMono(UsuarioDTO.class)
+                .block();
+            nueva.setVoluntario(voluntarioDTO);
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo validar al voluntario");
+        }
+    }
+    return adRep.save(nueva);
+    }
+
+    public Optional<Adopcion> buscarPorId(Long id){
+        return adRep.findById(id);
+    }
+    
+    public Optional<Adopcion> actualizar(Long id, Adopcion datosActualizados) {
+    Optional<Adopcion> adopcionOpcional = adRep.findById(id);
+    if (adopcionOpcional.isPresent()) {
+        Adopcion adopcionExistente = adopcionOpcional.get();
+        Mascota mascotaReal = masRep.findById(datosActualizados.getMascotaId())
+            .orElseThrow(() -> new RuntimeException("La mascota especificada no existe"));
+        adopcionExistente.setMascota(mascotaReal);
+        try {
+            UsuarioDTO adoptanteDTO = web.get()
+                .uri("/usuarios/{id}", datosActualizados.getAdoptanteId())
+                .retrieve()
+                .bodyToMono(UsuarioDTO.class)
+                .block();
+            adopcionExistente.setAdoptante(adoptanteDTO);
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo validar al adoptante");
+        }
+        if (datosActualizados.getVoluntarioId() != null) {
+            try {
+                UsuarioDTO voluntarioDTO = web.get()
+                    .uri("/usuarios/{id}", datosActualizados.getVoluntarioId())
+                    .retrieve()
+                    .bodyToMono(UsuarioDTO.class)
+                    .block();
+                adopcionExistente.setVoluntario(voluntarioDTO);
+            } catch (Exception e) {
+                throw new RuntimeException("No se pudo validar al voluntario");
+            }
+        } else {
+            adopcionExistente.setVoluntario(null);
+        }
+        adopcionExistente.setFechaAdopcion(datosActualizados.getFechaAdopcion());
+        adopcionExistente.setMascotaId(datosActualizados.getMascotaId());
+        adopcionExistente.setAdoptanteId(datosActualizados.getAdoptanteId());
+        adopcionExistente.setVoluntarioId(datosActualizados.getVoluntarioId());
+        return Optional.of(adRep.save(adopcionExistente));
+        } else {
+            return Optional.empty();
+        }
+    }
+    
+    public void eliminar(Long id) {
+        adRep.deleteById(id);
+    }
+
+    public List<Adopcion> listarPorVoluntario(Long volId){
+        return adRep.listarPorVoluntario(volId);
+    }
+
+    public List<Adopcion> listarPorAdoptante(Long adId){
+        return adRep.listarPorAdoptante(adId);
+    }
+}
