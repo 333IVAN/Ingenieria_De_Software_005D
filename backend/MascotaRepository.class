@@ -1,0 +1,42 @@
+package com.kiwi.service_mascota.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import com.kiwi.service_mascota.model.Mascota;
+import com.kiwi.service_mascota.model.UsuarioDTO;
+import com.kiwi.service_mascota.repository.MascotaRepository;
+
+@Service
+public class MascotaService {
+    @Autowired
+    private MascotaRepository masRep;
+    @Autowired
+    private WebClient web;
+
+    public List<Mascota> listarTodos(){
+        return masRep.findAll();
+    }
+
+    public Mascota crear(Mascota nueva) {
+    UsuarioDTO user = web.get()
+        .uri("/usuarios/{id}", nueva.getCoordinadorId())
+        .retrieve()
+        .bodyToMono(UsuarioDTO.class)
+        .block(); 
+    nueva.setCoordinador(user);
+    return masRep.save(nueva);
+    }
+
+    public Optional<Mascota> buscarPorId(Long id){
+        return masRep.findById(id);
+    }
+    
+    public void eliminar(Long id) {
+        masRep.deleteById(id);
+    }
+}
