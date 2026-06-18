@@ -62,8 +62,7 @@ El proyecto backend contiene los siguientes servicios:
 3. `service-direccion` — Puerto `8083`
 4. `service-donacion` — Puerto `8084`
 5. `service-eventos` — Puerto `8086`
-
-> Nota: `api-gateway` también está configurado para enrutar `/mascotas/**` hacia `http://localhost:8085` si se añade el servicio correspondiente.
+6. `service-mascota` — Puerto `8085`
 
 ---
 
@@ -135,18 +134,37 @@ Todos los endpoints se exponen desde el API Gateway en:
 
 ### Service Usuario (`http://localhost:8082`)
 
+- `GET /roles`
+- `GET /roles/{id}`
+- `POST /roles`
+- `PUT /roles/{id}`
+- `DELETE /roles/{id}`
+- `DATOS DE PRUEBA`
+- `
+{
+  "descripcion": "DONANTE"
+
+}`
 - `GET /usuarios`
 - `GET /usuarios/{id}`
 - `GET /usuarios/rut/{rut}`
 - `POST /usuarios`
 - `PUT /usuarios/{id}`
 - `DELETE /usuarios/{id}`
+-  `DATOS DE PRUEBA`
+- `{
+  "rut": "65584754",
+  "dv": "k",
+  "pnombre": "Cletus",
+  "snombre": "Caceres",
+  "appaterno": "Crépusculo",
+  "apmaterno": "Cañalao",
+  "telefono": "66779875",
+  "correo": "cletus@email.com",
+  "direccionId": 1,
+  "contrasena": "abscde21"
+}`
 
-- `GET /roles`
-- `GET /roles/{id}`
-- `POST /roles`
-- `PUT /roles/{id}`
-- `DELETE /roles/{id}`
 
 - `GET /usuariorol/rol/{rolId}`
 - `DELETE /usuariorol/{id}`
@@ -161,7 +179,13 @@ Todos los endpoints se exponen desde el API Gateway en:
 - `DELETE /direcciones/{id}`
 
 ### Service Donacion (`http://localhost:8084`)
-
+- `GET /insumos`
+- `GET /insumos/{id}`
+- `DELETE /insumos/{id}`
+- `DATO DE PRUEBA
+{
+  "descripcion": "Ropa"
+} `
 - `GET /donaciones`
 - `GET /donaciones/{id}`
 - `POST /donaciones`
@@ -170,10 +194,14 @@ Todos los endpoints se exponen desde el API Gateway en:
 - `GET /donaciones/donante/{donId}`
 - `GET /donaciones/insumo/{inId}`
 - `GET /donaciones/campana/{cId}`
+- `{
+  "cantidad": 1500,
+  "descripcion": "Donación de 1500 mascarillas quirúrgicas de tres pliegues",
+  "fechadonacion": "2026-05-16",
+  "usuarioId": 2,
+  "insumoId": 2
+}`
 
-- `GET /insumos`
-- `GET /insumos/{id}`
-- `DELETE /insumos/{id}`
 
 ### Service Eventos (`http://localhost:8086`)
 
@@ -185,6 +213,13 @@ Todos los endpoints se exponen desde el API Gateway en:
 - `GET /campanias/anio/{anio}`
 - `GET /campanias/mes/{mes}`
 - `GET /campanias/administrador/{aId}`
+- `{ DATOS DE PRUEBA
+  "descripcion": "Campaña de invierno 2026",
+  "fechaIni": "2026-06-01",
+  "fechaFin": "2026-06-30",
+  "idAdministrador": 1,
+  "idCoordinador1": 2
+}`
 
 ---
 
