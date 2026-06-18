@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiwi Ayuda - Tu Portal de Apoyo Animal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fbf9fb; margin: 0; padding-top: 90px; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Navbar Compartida e Idéntica */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #eda7f3 0%, #fcfaa4 100%);
+            padding: 0px 40px; 
+            height: 90px;      
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            position: fixed;  
+            top: 0;            
+            left: 0;           
+            width: 100%;       
+            z-index: 1000;
+            
+        }
+        .logo-container {
+            position: relative;
+            width: 120px;  
+            height: 100%;  
+        }
+
+        .brand-title {
+            text-decoration: none;
+            color: #793881;         
+            font-weight: bolder;
+            font-size: 2.2rem;       
+            font-family: 'Comfortaa', sans-serif; 
+            margin-left: 20px;         
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .brand-title:hover {
+            opacity: 0.8;         
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            margin-left: auto;
+            margin-right: 40px;
+        }
+        .nav-links a {
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            color: #793881;
+            font-weight: normal;
+            font-size: 1.5rem;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .nav-links a:hover {
+            color: #1f1020;
+        }
+        .user-icon {
+            color: #701a75;
+            cursor: pointer;
+            background: white;
+            padding: 6px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 50px;  
+            height: 50px;
+        }
+
+        /* Hero Banner del Home */
+        .hero-banner-home {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.99)), url('https://caninecultureuk.com/cdn/shop/articles/How_Many_Dogs_Are_There_in_the_World_Canine_Culture_3.webp?v=1778243329');
+            background-size: cover;
+            background-position: center 70%;
+            padding: 50px 40px 80px 40px;
+            color: #793881;
+        }
+        /* Hero Banner de Donaciones */
+        .hero-banner-donacion {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.99)), url('https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1.00xw:0.669xh;0,0.190xh&resize=1200:*');
+            background-size: cover;
+            background-position: center 15%;
+            padding: 50px 40px 80px 40px;
+            color: #793881;
+        }
+
+        .hero-content {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+        .hero-banner h1 {
+            font-size: 2.1rem;
+            font-weight: normal;
+            background: linear-gradient(90deg, #a6fd90 0%, #ffde97 100%);
+            color: #6d317c;
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+        .hero-banner-home p {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff; 
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.3); 
+            max-width: 630px;
+            line-height: 1.6;
+        }
+        .hero-banner-donacion p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Contenedores Principales Públicos */
+        .main-container { 
+            max-width: 1250px; 
+            margin: -30px auto 50px auto; 
+            position: relative;
+            z-index: 10;
+            background: white; 
+            padding: 50px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
+        }
+
+        .form-container { 
+            max-width: 950px; 
+            margin: -30px auto 50px auto; 
+            position: relative;
+            z-index: 10;
+            background: white; 
+            padding: 60px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
+        }
+
+        /* Grid de Tarjetas (Home) */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+
+        .help-card {
+            background: #ffffff;
+            border: 1px solid #e9d5ff;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(121, 56, 129, 0.1);
+        }
+
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
+        .card-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+        }
+
+        .card-floating-title {
+            position: absolute;
+            top: 8px; 
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #ffffff; 
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6), 0px 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body {
+            padding: 15px 25px 30px 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .card-body p {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-conocer { 
+            width: 100%; 
+            background-color: #6366f1; 
+            color: white; 
+            padding: 14px; 
+            border-radius: 10px; 
+            font-weight: normal; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: background 0.2s; 
+            margin-top: auto;
+        }
+
+        .btn-conocer:hover { 
+            background-color: #4f46e5; 
+        }
+
+        /* Estilos del Formulario */
+        h2 { 
+            color: #793881; 
+            font-size: 1.3rem; 
+            font-weight: bold; 
+            padding-top: 40px;       
+            margin-top: 25px;        
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #e9d5ff; 
+            padding-bottom: 6px; 
+        }
+        #form-solicitud-donacion h2:first-of-type, #form-registro-comunidad h2:first-of-type {
+            padding-top: 6px; 
+            margin-top: 10px;
+        }
+
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-top: 14px; 
+            margin-bottom: 5px; 
+            color: #4b5563; 
+            font-size: 0.9rem; 
+        }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 11px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 10px; 
+            outline: none; 
+            background-color: #fff; 
+            color: #374151; 
+        }
+
+        input:focus, select:focus, textarea:focus { 
+            border-color: #8b5cf6; 
+        }
+
+        input[type="file"] {
+            background-color: #f9fafb;
+            border: 2px dashed #e9d5ff;
+            cursor: pointer;
+        }
+
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+
+        .grid-4 { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .bank-card {
+            background: #fafafa;
+            border: 1px solid #e9d5ff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+        .bank-card strong {
+            color: #793881;
+        }
+
+        .terms-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .terms-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        .terms-container label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        button[type="submit"] { 
+            width: 100%; 
+            background-color: #6366f1; 
+            color: white; 
+            padding: 14px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+            margin-top: 35px; 
+            cursor: pointer; 
+            transition: background 0.2s; 
+        }
+
+        button[type="submit"]:hover { 
+            background-color: #4f46e5; 
+        }
+
+        .seccion-dinamica {
+            display: none;
+        }
+
+        /* ESTRUCTURA DEL CONTAINER ADMIN */
+        .admin-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            color: #793881;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9d5ff;
+        }
+
+        .menu-btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-btn:hover {
+            background-color: #f5f3ff;
+            color: #793881;
+        }
+
+        .menu-btn.active {
+            background-color: #793881;
+            color: white;
+        }
+
+        .dashboard-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .hero-mini {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fffbeb 100%);
+            padding: 25px 30px;
+            border-radius: 12px;
+            border-left: 5px solid #eda7f3;
+            color: #793881;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .card-title {
+            color: #793881;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+            color: #4b5563;
+            background-color: white;
+            cursor: pointer;
+        }
+        .filter-select:focus { border-color: #8b5cf6; }
+
+        .table-container {
+            overflow-x: auto;       
+            overflow-y: auto;       
+            height: 300px;      
+            margin-top: 10px;
+            border: 1px solid #f3f4f6; 
+            border-radius: 8px;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f9fafb; 
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #e9d5ff; 
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #793881; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f9fafb; 
+            color: #4b5563;
+            font-weight: 600;
+            padding: 12px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: #6366f1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary:hover { background-color: #4f46e5; }
+
+        /* Footers unificados en comportamiento flex grow */
+        .site-footer {
+            background-color: #ffebc1; 
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: auto; 
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-info {
+            max-width: 50%; 
+        }
+
+        .footer-brand {
+            color: #793881; 
+            font-size: 1.4rem;
+            font-weight: normal;
+            margin-bottom: 8px;
+            margin-top: 0;
+            font-family: 'Comfortaa', sans-serif;
+        }
+
+        .footer-description {
+            color: #ad6eb6; 
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .instagram-icon {
+            color: #ad6eb6;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .instagram-icon:hover {
+            color: #793881; 
+        }
+
+        .footer-contact {
+            text-align: right; 
+        }
+
+        .footer-contact h4 {
+            color: #793881; 
+            font-size: 1.1rem;
+            font-weight: normal;
+            margin-bottom: 8px;
+            margin-top: 0;
+        }
+
+        .footer-contact p {
+            color: #ad6eb6;
+            font-size: 0.95rem;
+            margin: 4px 0;
+        }
+
+        /* Botón de WhatsApp */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 200px;        
+            right: 30px;        
+            background-color: #25d366; 
+            color: rgb(170, 0, 0);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            z-index: 9999;       
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); 
+            color: white; 
+        }
+
+        .wa-icon-img {
+            width: 50px;   
+            height: 50px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 1024px) {
+            .cards-grid, .grid-3, .admin-container, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+        <header class="navbar">
+        <div class="flex items-center">
+            <div class="logo-container w-[120px] h-full flex items-center">
+                <img src="img/logo2.png" alt="Logo">
+            </div>
+            <a onclick="mostrarVista('home')" class="brand-title">Fundación Kiwi Ayuda</a>
+        </div>
+
+        <nav class="nav-links">
+            <a onclick="mostrarVista('donacion')">Donar</a>
+            <a href="#">Adoptar</a>
+            <a onclick="mostrarVista('home')">Información</a>
+            <a onclick="mostrarVista('admin')">Panel Admin</a>
+        </nav>
+
+        <div class="user-container flex items-center gap-4">
+            <button onclick="abrirModalLogin()" class="text-[#793881] font-medium text-lg hover:text-purple-950 transition-colors">Iniciar Sesión</button>
+            <div class="user-icon" title="Área de Administración" onclick="mostrarVista('admin')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="26" height="26">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <div id="modal-login" onclick="cerrarModalAlClickearAfuera(event)" class="fixed inset-0 bg-black/50 z-[2000] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-6 shadow-2xl relative transform scale-95 transition-transform duration-300">
+            
+            <button onclick="cerrarModalLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none">&times;</button>
+            
+            <h3 class="text-xl font-bold text-[#793881] text-center mb-1">Iniciando sesión</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Ingresa a tu cuenta de la comunidad Kiwi Ayuda</p>
+            
+            <form id="form-login-comunidad" onsubmit="alert('Autenticación en desarrollo'); cerrarModalLogin(); return false;">
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Correo electrónico</label>
+                    <input type="email" placeholder="ejemplo@correo.com" required class="w-full p-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-purple-500">
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Contraseña</label>
+                    <input type="password" placeholder="••••••••" required class="w-full p-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-purple-500">
+                    
+                    <div class="flex justify-end mt-1.5">
+                        <button type="button" onclick="alert('Funcionalidad de recuperación en desarrollo')" class="text-[11px] text-[#793881] font-medium hover:underline bg-transparent border-0 p-0 cursor-pointer">
+                            Olvidé mi contraseña
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-2.5">
+                    <button type="submit" class="w-full bg-[#793881] text-white p-2.5 rounded-xl text-sm font-semibold hover:bg-purple-900 transition-colors !mt-0">
+                        Ingresar
+                    </button>
+                    
+                    <button type="button" onclick="irAVistaRegistro()" class="w-full border border-purple-300 text-[#793881] p-2.5 rounded-xl text-sm font-semibold hover:bg-purple-50 transition-colors">
+                        Registrarme
+                    </button>
+                    
+                    <button type="button" onclick="cerrarModalLogin()" class="text-xs text-[#793881] font-medium hover:underline mt-1 text-center block w-full bg-transparent border-0 p-0 cursor-pointer">
+                        Continuar como invitado
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="vista-home">
+        <section class="hero-banner hero-banner-home">
+            <div class="hero-content">
+                <h1>¿Cómo puedes ayudar?</h1>
+                <p>Únete a nuestra causa a través de alguna de estas acciones, y estarás ayudando directamente a mejorar la calidad de vida de nuestros animales rescatados.</p>
+            </div>
+        </section>
+
+        <main class="main-container" id="ayudanos">
+            <h1 style="font-size: 1.7rem; color: #793881; font-weight: bold; margin-bottom: 5px;">Formas de Ayudar</h1>
+            <p style="color: #6b7280; font-size: 0.95rem; margin-bottom: 20px;">Selecciona la forma en que deseas contribuir a nuestra misión de proteger y cuidar a los animales en riesgo</p>
+
+            <div class="cards-grid">
+                
+                <div class="help-card" data-page="donaciones">
+                    <div class="card-image-wrapper">
+                        <div class="card-floating-title">Donaciones</div>
+                        <img src="https://www.shutterstock.com/image-photo/cute-dachshund-looking-next-food-600nw-2645459067.jpg" alt="Donaciones">
+                        <div class="card-image-fade"></div>
+                    </div>
+                    <div class="card-body">
+                        <p>Realiza una donación económica para ayudarnos a financiar nuestros programas de rescate, alimentación y cuidado veterinario.</p>
+                        <button class="btn-conocer" onclick="mostrarVista('donacion')">Donar</button>
+                    </div>
+                </div>
+
+                <div class="help-card" data-page="hogar-temporal">
+                    <div class="card-image-wrapper">
+                        <div class="card-floating-title">Hogar Temporal</div>
+                        <img src="https://4knines.com/cdn/shop/articles/Important_Trail_Etiquette_You_Should_Know_When_Walking_Your_Dog_-_featured.jpg?v=1548138777" alt="Hogar Temporal">
+                        <div class="card-image-fade"></div>
+                    </div>
+                    <div class="card-body">
+                        <p>Abre tu hogar como cuidador temporal para animales en transición hacia su nuevo hogar permanente.</p>
+                        <button class="btn-conocer" onclick="alert('Sección Hogar Temporal en desarrollo.')">Ser Cuidador</button>
+                    </div>
+                </div>
+
+                <div class="help-card" data-page="voluntariado">
+                    <div class="card-image-wrapper">
+                        <div class="card-floating-title">Voluntariado</div>
+                        <img src="https://i0.wp.com/post.healthline.com/wp-content/uploads/2019/05/Female_Smartphone_Walking_1296x728-header-1296x728.jpg?w=1155&h=1528" alt="Voluntariado">
+                    </div>
+                    <div class="card-body">
+                        <p>Dedica tu tiempo y talento como voluntario para apoyar nuestras diferentes áreas de trabajo.</p>
+                        <button class="btn-conocer" onclick="alert('Sección Voluntariado en desarrollo.')">Ser Voluntario</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+
+    <div id="vista-donacion" style="display: none;">
+        <div class="hero-banner hero-banner-donacion">
+            <div class="hero-content">
+                <h1>Realiza una donación</h1>
+                <p>Ayuda a la fundación a continuar con sus esfuerzos por cuidar y encontrarle un hogar acogedor a animales sin familia donando insumos o apoyándonos financieramente.</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h1 style="font-size: 1.7rem; color: #793881; font-weight: bold; margin-bottom: 5px;">Solicitud de Donación</h1>
+            <p style="color: #6b7280; font-size: 0.95rem; margin-bottom: 20px;">Completa el formulario para donar insumos o dinero a la fundación</p>
+
+            <form id="form-solicitud-donacion">
+                
+                <h2>Datos Personales</h2>
+                
+                <div class="grid-2 mb-3">
+                    <div>
+                        <label for="pnombre">Primer Nombre *</label>
+                        <input type="text" id="pnombre" placeholder="Ej: Juan" required>
+                    </div>
+                    <div>
+                        <label for="snombre">Segundo Nombre (Opcional)</label>
+                        <input type="text" id="snombre" placeholder="Ej: Carlos">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label for="appaterno">Apellido Paterno *</label>
+                        <input type="text" id="appaterno" placeholder="Ej: Pérez" required>
+                    </div>
+                    <div>
+                        <label for="apmaterno">Apellido Materno (Opcional)</label>
+                        <input type="text" id="apmaterno" placeholder="Ej: González">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <label for="rut-cuerpo">RUT (Sin puntos ni guión) *</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="rut-cuerpo" placeholder="12345678" pattern="[0-9]{7,8}" title="Debe contener entre 7 y 8 dígitos numéricos" required>
+                            <span class="text-xl font-bold text-gray-400">-</span>
+                            <div class="w-28">
+                                <select id="rut-dv" required>
+                                    <option value="" disabled selected>DV</option>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="K">K</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="telefono">Teléfono *</label>
+                        <input type="tel" id="telefono" placeholder="+56912345678" required minlength="8" maxlength="14">
+                    </div>
+                </div>
+
+                <label for="email">Email *</label>
+                <input type="email" id="email" placeholder="correo@ejemplo.com" required>
+
+                <h2>Detalles de la Donación</h2>
+                <label for="tipo-donacion">Tipo de Donación *</label>
+                <select id="tipo-donacion" required onchange="alternarCamposDonacion()">
+                    <option value="Insumos" selected>Insumos (Alimento, Medicinas, Artículos)</option>
+                    <option value="Monetaria">Dinero / Monetaria</option>
+                </select>
+
+                <div id="grupo-insumos">
+                    <label for="insumo-id">Insumo a Donar *</label>
+                    <select id="insumo-id">
+                        <option value="1" selected>Alimento (Kilogramos)</option>
+                        <option value="2">Medicina/mg</option>
+                        <option value="3">Medicina/ml</option>
+                        <option value="4">Juguete</option>
+                        <option value="5">Ropa</option>
+                    </select>
+
+                    <div class="grid-2">
+                        <div>
+                            <label for="cantidad">Cantidad *</label>
+                            <input type="number" id="cantidad" placeholder="10" min="1" max="9999999">
+                        </div>
+                        <div>
+                            <label for="unidad-medida-estetica">Información Visual de Medida</label>
+                            <input type="text" id="unidad-medida-estetica" value="Automático según insumo" disabled class="bg-gray-100 text-gray-500 font-medium">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="grupo-monetario" class="seccion-dinamica">
+                    <label for="monto-donacion">Monto a Donar ($ CLP) *</label>
+                    <input type="number" id="monto-donacion" placeholder="Ej: 20000" min="500" max="9999999">
+                </div>
+
+                <label for="descripcion">Descripción Adicional *</label>
+                <textarea id="descripcion" rows="3" placeholder="Detalles obligatorios sobre el estado de la donación o comentarios..." required></textarea>
+
+                <h2 id="titulo-coordinacion-entrega">Información de Coordinación</h2>
+
+                <div id="bloque-coordinacion-insumos">
+                    <label for="direccion-retiro">Dirección de Retiro (Opcional)</label>
+                    <input type="text" id="direccion-retiro" placeholder="Calle 123, Comuna, Ciudad">
+
+                    <div class="grid-2">
+                        <div>
+                            <label for="fecha-disponible">Fecha Disponible *</label>
+                            <input type="date" id="fecha-disponible">
+                        </div>
+                        <div>
+                            <label for="horario-preferido">Horario Preferido de Contacto</label>
+                            <select id="horario-preferido">
+                                <option value="Cualquier horario">Cualquier horario</option>
+                                <option value="Mañana (09:00 - 13:00)">Mañana (09:00 - 13:00)</option>
+                                <option value="Tarde (14:00 - 18:00)">Tarde (14:00 - 18:00)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bloque-entrega-monetaria" class="seccion-dinamica">
+                    <label for="metodo-pago">Método de Entrega / Pago *</label>
+                    <select id="metodo-pago" onchange="alternarMetodoPago()">
+                        <option value="Transferencia Directa" selected>Transferencia Directa</option>
+                        <option value="Entrega en Sucursal">Entrega en Sucursal</option>
+                    </select>
+
+                    <div id="sub-bloque-transferencia" class="mt-4">
+                        <label class="mb-2 text-purple-900 font-semibold">Cuentas Bancarias Disponibles:</label>
+                        <div class="grid-3 mb-4">
+                            <div class="bank-card">
+                                <strong>Banco Estado</strong><br>
+                                Cuenta Corriente<br>
+                                N°: 123456789<br>
+                                Rut: 65.123.456-k<br>
+                                fundacion@kiwiayuda.org
+                            </div>
+                            <div class="bank-card">
+                                <strong>Banco de Chile</strong><br>
+                                Cuenta Corriente<br>
+                                N°: 987654321<br>
+                                Rut: 65.123.456-k<br>
+                                fundacion@kiwiayuda.org
+                            </div>
+                            <div class="bank-card">
+                                <strong>Banco BCI</strong><br>
+                                Cuenta Vista / Mach<br>
+                                N°: 555444332<br>
+                                Rut: 65.123.456-k<br>
+                                fundacion@kiwiayuda.org
+                            </div>
+                        </div>
+
+                        <label for="comprobante">Adjuntar Imagen de Comprobante *</label>
+                        <input type="file" id="comprobante" accept="image/*">
+                    </div>
+
+                    <div id="sub-bloque-sucursal" class="seccion-dinamica mt-4">
+                        <label for="sucursal-seleccionada">Seleccione la Sucursal de Entrega *</label>
+                        <select id="sucursal-seleccionada">
+                            <option value="">Seleccione una sucursal</option>
+                            <option value="Sucursal Santiago Centro">Sucursal Santiago Centro - Av. Libertador 1420</option>
+                            <option value="Sucursal Providencia">Sucursal Providencia - Calle Los Leones 455</option>
+                            <option value="Sucursal Viña del Mar">Sucursal Viña del Mar - Álvares 890</option>
+                            <option value="Sucursal Concepción">Sucursal Concepción - O'Higgins 540</option>
+                        </select>
+                    </div>
+
+                    <div class="terms-container">
+                        <input type="checkbox" id="terminos-condiciones">
+                        <label for="terminos-condiciones">Acepto los términos y condiciones de donaciones de la fundación Kiwi Ayuda y declaro que los fondos son lícitos.</label>
+                    </div>
+                </div>
+
+                <button type="submit">Continuar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="vista-registro" style="display: none;">
+        <div class="hero-banner hero-banner-donacion">
+            <div class="hero-content">
+                <h1>Únete a la fundación! Sin compromisos!</h1>
+                <p>Crea tu cuenta oficial en Kiwi Ayuda. Al registrarte de forma completa podrás hacer seguimiento de tus aportes y participar activamente en nuestra fundación.</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h1 style="font-size: 1.7rem; color: #793881; font-weight: bold; margin-bottom: 5px;">Formulario de Registro</h1>
+            <p style="color: #ea580c; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px;">⚠️ Todos los campos son obligatorios.</p>
+
+            <form id="form-registro-comunidad">
+                <h2>Datos Personales Obligatorios</h2>
+                
+                <div class="grid-2 mb-3">
+                    <div>
+                        <label for="reg-pnombre">Primer Nombre *</label>
+                        <input type="text" id="reg-pnombre" placeholder="Ej: Juan" required>
+                    </div>
+                    <div>
+                        <label for="reg-snombre">Segundo Nombre *</label>
+                        <input type="text" id="reg-snombre" placeholder="Ej: Carlos" required>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label for="reg-appaterno">Apellido Paterno *</label>
+                        <input type="text" id="reg-appaterno" placeholder="Ej: Pérez" required>
+                    </div>
+                    <div>
+                        <label for="reg-apmaterno">Apellido Materno *</label>
+                        <input type="text" id="reg-apmaterno" placeholder="Ej: González" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <label for="reg-rut-cuerpo">RUT (Sin puntos ni guión) *</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="reg-rut-cuerpo" placeholder="12345678" pattern="[0-9]{7,8}" title="Debe contener entre 7 y 8 dígitos numéricos" required>
+                            <span class="text-xl font-bold text-gray-400">-</span>
+                            <div class="w-28">
+                                <select id="reg-rut-dv" required>
+                                    <option value="" disabled selected>DV</option>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="K">K</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="reg-telefono">Teléfono *</label>
+                        <input type="tel" id="reg-telefono" placeholder="+56912345678" required minlength="8" maxlength="14">
+                    </div>
+                </div>
+
+                <label for="reg-email">Email *</label>
+                <input type="email" id="reg-email" placeholder="correo@ejemplo.com" required>
+
+                <h2>Credenciales de Acceso</h2>
+                <div class="mb-4">
+                    <label for="reg-contrasena">Contraseña de la Cuenta *</label>
+                    <input type="password" id="reg-contrasena" placeholder="Mínimo 8 caracteres" required minlength="8" maxlength="60">
+                </div>
+
+                <button type="submit">Registrarme</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="vista-admin" style="display: none; width: 100%;">
+        <main class="admin-container">
+            <aside class="sidebar">
+                <div class="sidebar-title">Menú de Opciones</div>
+                <nav>
+                    <button class="menu-btn active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                        Dashboard Resumen
+                    </button>
+                    <button class="menu-btn" onclick="alert('Módulo de Donaciones en desarrollo')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Admin. de Donaciones
+                    </button>
+                    <button class="menu-btn" onclick="alert('Módulo de Adopciones en desarrollo')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        Admin. de Adopciones
+                    </button>
+                    <button class="menu-btn" onclick="alert('Módulo de Usuarios en desarrollo')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Admin. de Usuarios
+                    </button>
+                </nav>
+            </aside>
+
+            <section class="dashboard-content">
+                <div class="hero-mini">
+                    <h1 class="text-xl font-bold mb-1">¡Hola, Administrador!</h1>
+                    <p class="text-sm opacity-90">Aquí tienes el resumen operacional y de aportes recibidos por la fundación.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card flex flex-col justify-between border-t-4 border-yellow-400">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Fondos Totales de la Fundación</div>
+                            <div class="text-3xl font-bold text-[#793881] mt-2">$0 <span class="text-sm font-normal text-gray-400">(CLP)</span></div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-4">* No se registran fondos monetarios disponibles en la cuenta activa.</p>
+                    </div>
+
+                    <div class="card flex flex-col justify-between border-t-4 border-purple-400">
+                        <div>
+                            <div class="card-title mb-1">Resumen de Inventario</div>
+                            <p class="text-xs text-gray-500 mb-3">Últimos insumos críticos ingresados</p>
+                            <div class="space-y-1.5 text-sm text-gray-600">
+                                <div class="flex justify-between"><span>🐾 Alimento de Perro Adulto:</span> <strong class="text-gray-800">45 Kilos</strong></div>
+                                <div class="flex justify-between"><span>💊 Antiparasitarios Caninos:</span> <strong class="text-gray-800">12 Unidades</strong></div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2">
+                            <button class="btn-primary w-full text-center py-2" onclick="alert('Abriendo vista completa del inventario...')">Ver Inventario Completo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-4 pb-3 border-b border-gray-100">
+                        <div>
+                            <div class="card-title mb-0">Resumen de Donaciones</div>
+                            <p class="text-xs text-gray-500 mt-0.5">Filtra los flujos de recepción de solicitudes</p>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full xl:w-auto justify-start xl:justify-end">
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap mr-1">Filtrar por:</span>
+                            
+                            <div class="w-full sm:w-auto">
+                                <select id="filtro-dia" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonaciones()">
+                                    <option value="todos" selected>Día (Cualquiera)</option>
+                                </select>
+                            </div>
+
+                            <div class="w-full sm:w-auto">
+                                <select id="filtro-mes" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonaciones()">
+                                    <option value="todos" selected>Mes (Cualquiera)</option>
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+
+                            <div class="w-full sm:w-auto">
+                                <select id="filtro-ano" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonaciones()">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Donante</th>
+                                    <th>RUT</th>
+                                    <th>Tipo Donación</th>
+                                    <th>Detalle / Cantidad</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-donaciones-body">
+                                <tr><td colspan="6" class="text-center text-gray-400 py-6">Cargando datos operacionales...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+    <footer class="site-footer">
+        <div class="footer-info">
+            <h3 class="footer-brand">Kiwi Ayuda</h3>
+            <p id="footer-text-dinamico" class="footer-description">Kiwi Ayuda es una fundación independiente dedicada a la ayuda y rescate de animales en situación vulnerable.</p>
+            
+            <div class="footer-social">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="instagram-icon">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </div>
+        </div>
+
+        <div class="footer-contact">
+            <h4 id="footer-titulo-contacto">Contáctanos</h4>
+            <p id="footer-contacto-p1">+56 9 XXXX-XXXX</p>
+            <p id="footer-contacto-p2">@kiwi.ayuda</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/56912345678?text=Hola!%20Me%20gustaría%20obtener%20más%20información" 
+        class="whatsapp-btn" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        title="Contáctanos por WhatsApp">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="wa-icon-img">
+    </a>
+
+    <script>
+        // URL base de tu microservicio de donaciones
+        const API_BASE_URL = 'http://localhost:9090/donaciones';
+        const API_USUARIOS_URL = 'http://localhost:9090/usuarios';
+
+        // MODAL INTERACTION FUNCTIONS
+        function abrirModalLogin() {
+            const modal = document.getElementById('modal-login');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function cerrarModalLogin() {
+            const modal = document.getElementById('modal-login');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function cerrarModalAlClickearAfuera(event) {
+            const modalBackground = document.getElementById('modal-login');
+        
+            if (event.target === modalBackground) {
+                cerrarModalLogin();
+            }
+        }
+
+        function irAVistaRegistro() {
+            cerrarModalLogin();
+            mostrarVista('registro');
+        }
+
+        // Cambiar entre las vistas disponibles: 'home', 'donacion', 'admin', 'registro'
+        function mostrarVista(vista) {
+            const home = document.getElementById('vista-home');
+            const donacion = document.getElementById('vista-donacion');
+            const admin = document.getElementById('vista-admin');
+            const registro = document.getElementById('vista-registro');
+            
+            const fText = document.getElementById('footer-text-dinamico');
+            const fTitleContact = document.getElementById('footer-titulo-contacto');
+            const fP1 = document.getElementById('footer-contacto-p1');
+            const fP2 = document.getElementById('footer-contacto-p2');
+
+            home.style.display = 'none';
+            donacion.style.display = 'none';
+            admin.style.display = 'none';
+            registro.style.display = 'none';
+
+            if(vista === 'home') {
+                home.style.display = 'block';
+                fText.innerText = "Kiwi Ayuda es una fundación independiente dedicada a la ayuda y rescate de animales en situación vulnerable.";
+                fTitleContact.innerText = "Contáctanos";
+                fP1.innerText = "+56 9 XXXX-XXXX";
+                fP2.innerText = "@kiwi.ayuda";
+            } 
+            else if(vista === 'donacion') {
+                donacion.style.display = 'block';
+                fText.innerText = "Kiwi Ayuda es una fundación independiente dedicada a la ayuda y rescate de animales en situación vulnerable.";
+                fTitleContact.innerText = "Contáctanos";
+                fP1.innerText = "+56 9 XXXX-XXXX";
+                fP2.innerText = "@kiwi.ayuda";
+            } 
+            else if(vista === 'registro') {
+                registro.style.display = 'block';
+                fText.innerText = "Regístrate en nuestra comunidad y sé parte del cambio para cientos de animales rescatados.";
+                fTitleContact.innerText = "Soporte Comunidad";
+                fP1.innerText = "comunidad@kiwiayuda.org";
+                fP2.innerText = "";
+            }
+            else if(vista === 'admin') {
+                admin.style.display = 'block';
+                fText.innerText = "Panel de gestión interna. Autorizado solo para personal administrativo y coordinadores.";
+                fTitleContact.innerText = "Soporte TI";
+                fP1.innerText = "soporte@kiwiayuda.org";
+                fP2.innerText = "";
+                
+                cargarDonacionesDesdeBackend();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Alternar el formulario de Donaciones (Insumos vs Monetaria)
+        function alternarCamposDonacion() {
+            const selectorTipo = document.getElementById('tipo-donacion').value;
+            const grupoInsumos = document.getElementById('grupo-insumos');
+            const grupoMonetario = document.getElementById('grupo-monetario');
+            
+            const tituloSeccion = document.getElementById('titulo-coordinacion-entrega');
+            const bloqueInsumos = document.getElementById('bloque-coordinacion-insumos');
+            const bloqueMonetaria = document.getElementById('bloque-entrega-monetaria');
+
+            const insumoId = document.getElementById('insumo-id');
+            const cantidad = document.getElementById('cantidad');
+            const montoDonacion = document.getElementById('monto-donacion');
+            const fechaDisponible = document.getElementById('fecha-disponible');
+
+            if (selectorTipo === 'Monetaria') {
+                grupoInsumos.style.display = 'none';
+                grupoMonetario.style.display = 'block';
+                tituloSeccion.innerText = "Información de Entrega";
+                bloqueInsumos.style.display = 'none';
+                bloqueMonetaria.style.display = 'block';
+
+                montoDonacion.required = true;
+                insumoId.required = false;
+                cantidad.required = false;
+                fechaDisponible.required = false;
+                alternarMetodoPago();
+            } else {
+                grupoInsumos.style.display = 'block';
+                grupoMonetario.style.display = 'none';
+                tituloSeccion.innerText = "Información de Coordinación";
+                bloqueInsumos.style.display = 'block';
+                bloqueMonetaria.style.display = 'none';
+
+                montoDonacion.required = false;
+                insumoId.required = true;
+                cantidad.required = true;
+                fechaDisponible.required = true;
+
+                document.getElementById('comprobante').required = false;
+                document.getElementById('sucursal-seleccionada').required = false;
+                document.getElementById('terminos-condiciones').required = false;
+            }
+        }
+
+        function alternarMetodoPago() {
+            const metodo = document.getElementById('metodo-pago').value;
+            const subTransferencia = document.getElementById('sub-bloque-transferencia');
+            const subSucursal = document.getElementById('sub-bloque-sucursal');
+            document.getElementById('terminos-condiciones').required = true;
+
+            if (metodo === 'Transferencia Directa') {
+                subTransferencia.style.display = 'block';
+                subSucursal.style.display = 'none';
+                document.getElementById('comprobante').required = true;
+                document.getElementById('sucursal-seleccionada').required = false;
+            } else {
+                subTransferencia.style.display = 'none';
+                subSucursal.style.display = 'block';
+                document.getElementById('comprobante').required = false;
+                document.getElementById('sucursal-seleccionada').required = true;
+            }
+        }
+
+        // GET: Consumir el Microservicio para listar en la tabla del Administrador
+        async function cargarDonacionesDesdeBackend() {
+            const tbody = document.getElementById('tabla-donaciones-body');
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-purple-600 py-6 font-medium animate-pulse">Cargando registros desde el backend de Spring Boot...</td></tr>`;
+
+            try {
+                const response = await fetch(API_BASE_URL);
+                if (!response.ok) throw new Error("Error en la respuesta del servidor");
+                
+                const donaciones = await response.json();
+                tbody.innerHTML = '';
+
+                if (donaciones.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-400 py-6">No hay registros de donaciones en la base de datos.</td></tr>`;
+                    return;
+                }
+
+                donaciones.forEach(item => {
+                    const donante = item.usuario ? `${item.usuario.pnombre} ${item.usuario.appaterno}` : "Donante Anónimo";
+                    const rut = item.usuario ? `${item.usuario.rut}-${item.usuario.dv}` : "Sin RUT";
+                    const tipo = item.cantidad ? "Insumos" : "Monetaria";
+                    const detalle = item.cantidad ? `${item.descripcion || 'Insumo'} (${item.cantidad})` : `$${item.monto || 0}`;
+                    const fecha = item.fechadonacion ? item.fechadonacion : 'Sin fecha';
+                    const estado = "Recibido";
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="font-medium text-gray-900">${donante}</td>
+                            <td class="text-gray-500">${rut}</td>
+                            <td><span class="px-2 py-1 rounded-md text-xs font-semibold bg-purple-50 text-[#793881]">${tipo}</span></td>
+                            <td>${detalle}</td>
+                            <td class="text-gray-500">${fecha}</td>
+                            <td><span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">${estado}</span></td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error al buscar las donaciones:", error);
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6 font-semibold">⚠️ Hubo un error de comunicación con tu API de Spring Boot. Verifica la consola o la clase WebClientConfig.</td></tr>`;
+            }
+        }
+
+        // POST: Enviar formulario público de donaciones hacia Spring Boot (Invitados)
+        document.getElementById('form-solicitud-donacion').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const tipoDonacion = document.getElementById('tipo-donacion').value;
+            const cuerpoRutLimpio = document.getElementById('rut-cuerpo').value.replace(/[^0-9]/g, '');
+            const telefonoLimpio = document.getElementById('telefono').value.replace(/[^0-9]/g, '');
+
+            function formatearTelefono(tel) {
+                if (tel.length < 8) return "56999999";
+                return tel;
+            }
+
+            const payloadUsuarioInvitado = {
+                rut: cuerpoRutLimpio,
+                dv: document.getElementById('rut-dv').value.trim(),
+                pnombre: document.getElementById('pnombre').value.trim(),
+                snombre: document.getElementById('snombre').value.trim() || "",
+                appaterno: document.getElementById('appaterno').value.trim(),
+                apmaterno: document.getElementById('apmaterno').value.trim() || "",
+                telefono: formatearTelefono(telefonoLimpio),
+                correo: document.getElementById('email').value.trim(),
+                direccionId: 1, 
+                contrasena: null 
+            };
+
+            let idUsuarioAsignado = null;
+
+            try {
+                const resUser = await fetch(API_USUARIOS_URL, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(payloadUsuarioInvitado)
+                });
+
+                if (!resUser.ok) {
+                    const errorText = await resUser.text();
+                    throw new Error(`Error al crear el usuario en el Backend: ${errorText}`);
+                }
+
+                const usuarioGuardado = await resUser.json();
+                idUsuarioAsignado = usuarioGuardado.id;
+
+                const payloadDonacion = {
+                    cantidad: tipoDonacion === 'Insumos' ? parseInt(document.getElementById('cantidad').value) : null,
+                    descripcion: document.getElementById('descripcion').value,
+                    fechadonacion: new Date().toISOString().split('T')[0],
+                    usuarioId: idUsuarioAsignado, 
+                    insumoId: tipoDonacion === 'Insumos' ? parseInt(document.getElementById('insumo-id').value) : null,
+                    campanaId: null
+                };
+
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(payloadDonacion)
+                });
+
+                if (response.ok || response.status === 201) {
+                    const data = await response.json();
+                    alert(`¡Todo guardado con éxito!\n1. Usuario Invitado creado con ID: ${idUsuarioAsignado}\n2. Donación registrada con ID: ${data.id}`);
+                    document.getElementById('form-solicitud-donacion').reset();
+                    mostrarVista('home');
+                } else {
+                    const errorDonacion = await response.text();
+                    throw new Error(`El usuario se creó, pero la donación falló: ${errorDonacion}`);
+                }
+            } catch (error) {
+                console.error("Error en la transacción:", error);
+                alert(`Ocurrió un problema:\n${error.message}`);
+            }
+        });
+
+        // POST: Enviar formulario de REGISTRO DE COMUNIDAD (Campos 100% Obligatorios)
+        document.getElementById('form-registro-comunidad').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const cuerpoRutLimpio = document.getElementById('reg-rut-cuerpo').value.replace(/[^0-9]/g, '');
+            const telefonoLimpio = document.getElementById('reg-telefono').value.replace(/[^0-9]/g, '');
+
+            const payloadUsuarioComunidad = {
+                rut: cuerpoRutLimpio,
+                dv: document.getElementById('reg-rut-dv').value.trim(),
+                pnombre: document.getElementById('reg-pnombre').value.trim(),
+                snombre: document.getElementById('reg-snombre').value.trim(), // Requerido de forma estricta
+                appaterno: document.getElementById('reg-appaterno').value.trim(),
+                apmaterno: document.getElementById('reg-apmaterno').value.trim(), // Requerido de forma estricta
+                telefono: telefonoLimpio,
+                correo: document.getElementById('reg-email').value.trim(),
+                direccionId: 1, 
+                contrasena: document.getElementById('reg-contrasena').value // Requerido de forma estricta
+            };
+
+            console.log("JSON enviado a /usuarios (Registro Comunidad):", JSON.stringify(payloadUsuarioComunidad));
+
+            try {
+                const response = await fetch(API_USUARIOS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(payloadUsuarioComunidad)
+                });
+
+                if (response.ok || response.status === 201) {
+                    const usuarioCreado = await response.json();
+                    alert(`¡Registro Exitoso!\nBienvenido/a a la comunidad Kiwi Ayuda.\nTu cuenta ha sido creada con el ID: ${usuarioCreado.id} y asignada con perfil de USUARIO REGISTRADO.`);
+                    document.getElementById('form-registro-comunidad').reset();
+                    mostrarVista('home');
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(`Error en el servidor de Spring Boot: ${errorText}`);
+                }
+            } catch (error) {
+                console.error("Error al registrar en la comunidad:", error);
+                alert(`No se pudo completar el registro:\n${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
