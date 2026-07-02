@@ -1,13 +1,14 @@
 package com.kiwi.service_usuario;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@SpringBootTest
+import org.junit.jupiter.api.Test;
+
 class ServiceUsuarioApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void sePuedeCrearLaAplicacion() {
+		assertDoesNotThrow(ServiceUsuarioApplication::new);
 	}
 
 }

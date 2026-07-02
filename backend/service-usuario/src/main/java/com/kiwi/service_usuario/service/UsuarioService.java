@@ -25,42 +25,62 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario crear(Usuario us) {
-        Optional<Usuario> usuarioOpt = usRep.findByRut(us.getRut());
-        
+    public Usuario crear(Usuario us, String token) {
+
+        Optional<Usuario> usuarioOpt = usRep.findByRutAndDv(us.getRut(), us.getDv());
+
         if (usuarioOpt.isPresent()) {
             Usuario usuarioExistente = usuarioOpt.get();
-            
-            if (usuarioExistente.getContrasena() == null && us.getContrasena() != null && !us.getContrasena().trim().isEmpty()) {
+
+            if (usuarioExistente.getContrasena() == null &&
+                us.getContrasena() != null &&
+                !us.getContrasena().trim().isEmpty()) {
+
                 usuarioExistente.setContrasena(us.getContrasena());
                 usuarioExistente.setSnombre(us.getSnombre());
                 usuarioExistente.setApmaterno(us.getApmaterno());
-                
+
                 UsuarioRol ascensoRol = new UsuarioRol();
                 ascensoRol.setUsuarioId(usuarioExistente.getId());
-                ascensoRol.setRolId(3L); 
+                ascensoRol.setRolId(3L);
                 uRolRep.save(ascensoRol);
+
             } else {
-                usuarioExistente.setTelefono(us.getTelefono());
-                usuarioExistente.setCorreo(us.getCorreo());
+                throw new IllegalArgumentException(
+                    "El usuario con el RUT " + us.getRut() + "-" + us.getDv() + " ya existe."
+                );
             }
+
             return usRep.save(usuarioExistente);
         }
-        
-        // 2. SI EL USUARIO ES 100% NUEVO (Tu lógica original intacta)
-        Usuario usuarioGuardado = usRep.save(us);
-        
-        UsuarioRol nuevoUsuarioRol = new UsuarioRol();
-        nuevoUsuarioRol.setUsuarioId(usuarioGuardado.getId());
-        
-        if (us.getContrasena() != null && !us.getContrasena().trim().isEmpty()) {
-            nuevoUsuarioRol.setRolId(3L); // Rol 3: Registro formal
-        } else {
-            nuevoUsuarioRol.setRolId(4L); // Rol 4: Invitado
+
+        if (us.getContrasena() != null && us.getContrasena().trim().isEmpty()) {
+            us.setContrasena(null);
         }
+
+        Usuario usuarioGuardado = usRep.save(us);
+
+        UsuarioRol nuevoRol = new UsuarioRol();
+        nuevoRol.setUsuarioId(usuarioGuardado.getId());
+
+        String rawPassword = us.getContrasena();
+
+        if (rawPassword != null && rawPassword.trim().isEmpty()) {
+            rawPassword = null;
+        }
+
+        us.setContrasena(rawPassword);
+
+        Usuario usuarioGuardado1 = usRep.save(us);
+
+        UsuarioRol nuevoUsuarioRol = new UsuarioRol();
+        nuevoUsuarioRol.setUsuarioId(usuarioGuardado1.getId());
+
+        nuevoUsuarioRol.setRolId(rawPassword != null ? 3L : 4L);
+
         uRolRep.save(nuevoUsuarioRol);
-        
-        return usuarioGuardado;
+
+        return usuarioGuardado1;
     }
 
 

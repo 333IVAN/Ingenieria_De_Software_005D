@@ -1,0 +1,40 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../../../api-gateway"
+		},
+		{
+			"path": "../../../../../../../../PRUEBA"
+		},
+		{
+			"path": "../../../../../../../../service-auth"
+		},
+		{
+			"path": "../../../../../../../../service-comprobante"
+		},
+		{
+			"path": "../../../../../../../../service-direccion"
+		},
+		{
+			"path": "../../../../../../../../service-donacion"
+		},
+		{
+			"path": "../../../../../../../../service-eventos"
+		},
+		{
+			"path": "../../../../../../../../service-inventario"
+		},
+		{
+			"path": "../../../../../../../../service-mascota"
+		},
+		{
+			"path": "../../../../../../../../service-notificaciones"
+		},
+		{
+			"path": "../../../../../../.."
+		},
+		{
+			"path": "../../../../../../../../service-usuario"
+		}
+	]
+}

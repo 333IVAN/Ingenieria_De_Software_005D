@@ -1,9 +1,11 @@
 package com.kiwi.service_usuario.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import com.kiwi.service_usuario.model.UsuarioRol;
 import com.kiwi.service_usuario.service.UsuarioRolService;
 
 @RestController
+@Tag(name = "Usuario Rol", description = "Operaciones relacionadas con usuario rol de KiwiAyuda")
 @RequestMapping("/usuariorol")
 public class UsuarioRolController {
     @Autowired
