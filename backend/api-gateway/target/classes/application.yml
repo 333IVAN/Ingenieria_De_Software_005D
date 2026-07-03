@@ -1,48 +1,169 @@
 server:
   port: 9090
 
+jwt:
+  secret: "53616c75646f734465736465456c437572736f44654d6963726f736572766963696f7332303234536567757269646164"
+
 spring:
   application:
     name: api-gateway
   cloud:
     gateway:
       globalcors:
-          corsConfigurations:
-            '[/**]':
-              allowedOrigins:
-                - "http://127.0.0.1:5500"
-                - "http://localhost:5500"
-              allowedMethods:
-                - GET
-                - POST
-                - PUT
-                - DELETE
-                - OPTIONS
-              allowedHeaders:
-                - "*"
-              Access-Control-Allow-Origin: http://127.0.0.1:5500
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://127.0.0.1:5500"
+              - "http://localhost:5500"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
       routes:
         - id: service-usuario
           uri: http://localhost:8082
           predicates:
             - Path=/usuarios/**, /usuariorol/**, /roles/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+            - AuthenticationFilter
+
+        - id: service-usuario-docs
+          uri: http://localhost:8082
+          predicates:
+            - Path=/usuarios/v3/api-docs/**, /v3/api-docs/**
 
         - id: service-direccion
           uri: http://localhost:8083
           predicates:
             - Path=/comunas/**, /direcciones/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-direccion-docs
+          uri: http://localhost:8083
+          predicates:
+            - Path=/direcciones/v3/api-docs
 
         - id: service-donacion
           uri: http://localhost:8084
           predicates:
-            - Path=/donaciones/**, /insumos/**
+            - Path=/donaciones/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+            - AuthenticationFilter
+
+        - id: service-donacion-docs
+          uri: http://localhost:8084
+          predicates:
+            - Path=/donaciones/v3/api-docs/**, /v3/api-docs/**
 
         - id: service-mascota
           uri: http://localhost:8085
           predicates:
-            - Path=/mascotas/**
+            - Path=/mascotas/**, /adopciones/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-mascota-docs
+          uri: http://localhost:8085
+          predicates:
+            - Path=/mascotas/v3/api-docs/**, /v3/api-docs/**
 
         - id: service-eventos
           uri: http://localhost:8086
           predicates:
             - Path=/campanias/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-eventos-docs
+          uri: http://localhost:8086
+          predicates:
+            - Path=/campanias/v3/api-docs
+
+        - id: service-inventario
+          uri: http://localhost:8087
+          predicates:
+            - Path=/inventarios/**, /movimientos/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-inventario-docs
+          uri: http://localhost:8087
+          predicates:
+            - Path=/inventarios/v3/api-docs
+
+        - id: service-notificaciones
+          uri: http://localhost:8088
+          predicates:
+            - Path=/notificaciones/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-notificaciones-docs
+          uri: http://localhost:8088
+          predicates:
+            - Path=/notificaciones/v3/api-docs/**, /v3/api-docs/**
+
+        - id: service-sucursal
+          uri: http://localhost:8089
+          predicates:
+            - Path=/sucursales/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-sucursal-docs
+          uri: http://localhost:8089
+          predicates:
+            - Path=/sucursales/v3/api-docs/**, /v3/api-docs/**
+
+        - id: service-comprobante
+          uri: http://localhost:8090
+          predicates:
+            - Path=/tickets/**
+          filters:
+            - AuthenticationFilter
+
+        - id: service-comprobante-docs
+          uri: http://localhost:8090
+          predicates:
+            - Path=/tickets/v3/api-docs
+
+        - id: service-auth
+          uri: http://localhost:8091
+          predicates:
+            - Path=/auth/**
+
+
+      eureka:
+        client:
+          register-with-eureka: false
+          fetch-registry: false
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Servicio Usuario
+        url: /usuarios/v3/api-docs
+      - name: Servicio Dirección
+        url: /direcciones/v3/api-docs
+      - name: Servicio Donación
+        url: /donaciones/v3/api-docs
+      - name: Servicio Mascota
+        url: /mascotas/v3/api-docs
+      - name: Servicio Eventos
+        url: /campanias/v3/api-docs
+      - name: Servicio Inventario
+        url: /inventarios/v3/api-docs
+      - name: Servicio Notificaciones
+        url: /notificaciones/v3/api-docs
+      - name: Servicio Sucursal
+        url: /sucursales/v3/api-docs
+      - name: Servicio Comprobante
+        url: /tickets/v3/api-docs
