@@ -5,7 +5,7 @@
   Arquitectura basada en Spring Boot y API Gateway.
 </p>
 
-## 📋 Tabla de Contenidos
+##  Tabla de Contenidos
 
 - [Acerca del Proyecto](#-acerca-del-proyecto)
 - [Características](#-características)
@@ -18,7 +18,7 @@
 
 ---
 
-## 🧬 Acerca del Proyecto
+##  Acerca del Proyecto
 
 Este proyecto es un backend de microservicios desarrollado como parte de la asignatura de Ingeniería de Software. Está diseñado para manejar de forma independiente distintos dominios del negocio: usuarios, direcciones, donaciones e eventos, con un `API Gateway` centralizado para enrutar las solicitudes.
 
@@ -26,7 +26,7 @@ El sistema está pensado para ser flexible y escalable, separando responsabilida
 
 ---
 
-## ✨ Características
+##  Características
 
 - 👥 Gestión de usuarios con entidades de `Usuario` y `Rol`.
 - 📍 Gestión de direcciones y comunas.
@@ -53,20 +53,25 @@ El sistema está pensado para ser flexible y escalable, separando responsabilida
 
 ---
 
-## 🏗️ Arquitectura
+##  Arquitectura
 
 El proyecto backend contiene los siguientes servicios:
 
 1. `api-gateway` — Puerto `9090`
-2. `service-usuario` — Puerto `8082`
-3. `service-direccion` — Puerto `8083`
-4. `service-donacion` — Puerto `8084`
-5. `service-eventos` — Puerto `8086`
-6. `service-mascota` — Puerto `8085`
+2. `service-auth` — Puerto `8091`
+3. `service-comprobante` — Puerto `8090`
+4. `service-usuario` — Puerto `8082`
+5. `service-direccion` — Puerto `8083`
+6. `service-donacion` — Puerto `8084`
+7. `service-mascota` — Puerto `8085`
+8. `service-eventos` — Puerto `8086`
+9. `service-inventario` — Puerto `8087`
+10. `service-notificaciones` — Puerto `8088`
+11. `service-sucursal` — Puerto `8089`
 
 ---
 
-## 🚀 Instalación y Ejecución
+##  Instalación y Ejecución
 
 ### Prerrequisitos
 
@@ -95,10 +100,20 @@ CREATE DATABASE db_evento;
 
 ### 3. Iniciar cada servicio
 
-Ejecuta cada servicio en su carpeta correspondiente usando Maven.
+Ejecuta cada servicio en su carpeta correspondiente usando Maven. Algunos servicios pueden iniciarse en paralelo, pero el `API Gateway` debe ejecutarse una vez que los microservicios estén disponibles.
 
 ```bash
-cd backend/service-usuario
+cd backend/service-auth
+mvn spring-boot:run
+```
+
+```bash
+cd ../service-comprobante
+mvn spring-boot:run
+```
+
+```bash
+cd ../service-usuario
 mvn spring-boot:run
 ```
 
@@ -113,7 +128,27 @@ mvn spring-boot:run
 ```
 
 ```bash
+cd ../service-mascota
+mvn spring-boot:run
+```
+
+```bash
 cd ../service-eventos
+mvn spring-boot:run
+```
+
+```bash
+cd ../service-inventario
+mvn spring-boot:run
+```
+
+```bash
+cd ../service-notificaciones
+mvn spring-boot:run
+```
+
+```bash
+cd ../service-sucursal
 mvn spring-boot:run
 ```
 
@@ -132,94 +167,132 @@ Todos los endpoints se exponen desde el API Gateway en:
 
 `http://localhost:9090`
 
+### Service Auth (`http://localhost:8091`)
+
+- `POST /auth/login`
+- `POST /auth/register`
+
+### Service Comprobante (`http://localhost:8090`)
+
+- `POST /tickets`
+- `GET /tickets`
+- `GET /tickets/{id}`
+- `PUT /tickets/{id}`
+- `DELETE /tickets/{id}`
+- `GET /tickets/donante/{donId}`
+- `GET /tickets/voluntario/{volId}`
+
 ### Service Usuario (`http://localhost:8082`)
 
+- `POST /roles`
 - `GET /roles`
 - `GET /roles/{id}`
-- `POST /roles`
 - `PUT /roles/{id}`
 - `DELETE /roles/{id}`
-- `DATOS DE PRUEBA`
-- `
-{
-  "descripcion": "DONANTE"
 
-}`
+- `POST /usuarios`
 - `GET /usuarios`
 - `GET /usuarios/{id}`
 - `GET /usuarios/rut/{rut}`
-- `POST /usuarios`
 - `PUT /usuarios/{id}`
 - `DELETE /usuarios/{id}`
--  `DATOS DE PRUEBA`
-- `{
-  "rut": "65584754",
-  "dv": "k",
-  "pnombre": "Cletus",
-  "snombre": "Caceres",
-  "appaterno": "Crépusculo",
-  "apmaterno": "Cañalao",
-  "telefono": "66779875",
-  "correo": "cletus@email.com",
-  "direccionId": 1,
-  "contrasena": "abscde21"
-}`
 
-
+- `POST /usuariorol`
+- `GET /usuariorol`
 - `GET /usuariorol/rol/{rolId}`
 - `DELETE /usuariorol/{id}`
 
 ### Service Direccion (`http://localhost:8083`)
 
+- `POST /comunas`
 - `GET /comunas`
 - `GET /comunas/{id}`
 - `DELETE /comunas/{id}`
+
+- `POST /direcciones`
 - `GET /direcciones`
 - `GET /direcciones/{id}`
 - `DELETE /direcciones/{id}`
 
 ### Service Donacion (`http://localhost:8084`)
+
+- `POST /insumos`
 - `GET /insumos`
 - `GET /insumos/{id}`
 - `DELETE /insumos/{id}`
-- `DATO DE PRUEBA
-{
-  "descripcion": "Ropa"
-} `
+
+- `POST /donaciones`
 - `GET /donaciones`
 - `GET /donaciones/{id}`
-- `POST /donaciones`
 - `PUT /donaciones/{id}`
 - `DELETE /donaciones/{id}`
 - `GET /donaciones/donante/{donId}`
 - `GET /donaciones/insumo/{inId}`
 - `GET /donaciones/campana/{cId}`
-- `{
-  "cantidad": 1500,
-  "descripcion": "Donación de 1500 mascarillas quirúrgicas de tres pliegues",
-  "fechadonacion": "2026-05-16",
-  "usuarioId": 2,
-  "insumoId": 2
-}`
 
+### Service Mascota (`http://localhost:8085`)
+
+- `POST /mascotas`
+- `GET /mascotas`
+- `GET /mascotas/{id}`
+- `DELETE /mascotas/{id}`
+
+- `POST /adopciones`
+- `GET /adopciones`
+- `GET /adopciones/{id}`
+- `PUT /adopciones/{id}`
+- `DELETE /adopciones/{id}`
+- `GET /adopciones/adoptante/{adId}`
+- `GET /adopciones/voluntario/{voId}`
 
 ### Service Eventos (`http://localhost:8086`)
 
+- `POST /campanias`
 - `GET /campanias`
 - `GET /campanias/{id}`
-- `POST /campanias`
 - `PUT /campanias/{id}`
 - `DELETE /campanias/{id}`
 - `GET /campanias/anio/{anio}`
 - `GET /campanias/mes/{mes}`
 - `GET /campanias/administrador/{aId}`
-- `{ DATOS DE PRUEBA
-  "descripcion": "Campaña de invierno 2026",
-  "fechaIni": "2026-06-01",
-  "fechaFin": "2026-06-30",
-  "idAdministrador": 1,
-  "idCoordinador1": 2
-}`
+
+### Service Inventario (`http://localhost:8087`)
+
+- `POST /inventarios`
+- `GET /inventarios`
+- `GET /inventarios/{id}`
+- `GET /inventarios/insumo/{insumoId}`
+- `PUT /inventarios/{id}`
+- `DELETE /inventarios/{id}`
+
+- `POST /movimientos`
+- `POST /movimientos/donacion/{donacionId}`
+- `GET /movimientos`
+- `GET /movimientos/{id}`
+- `DELETE /movimientos/{id}`
+- `GET /movimientos/inventario/{inventarioId}`
+- `GET /movimientos/tipo/{tipo}`
+- `GET /movimientos/donacion/{donacionId}`
+
+### Service Notificaciones (`http://localhost:8088`)
+
+- `POST /notificaciones`
+- `GET /notificaciones`
+- `GET /notificaciones/{id}`
+- `PUT /notificaciones/{id}`
+- `PUT /notificaciones/{id}/leida`
+- `DELETE /notificaciones/{id}`
+- `GET /notificaciones/usuario/{usuarioId}`
+- `GET /notificaciones/estado/{leida}`
+
+### Service Sucursal (`http://localhost:8089`)
+
+- `POST /sucursales`
+- `GET /sucursales`
+- `GET /sucursales/{id}`
+- `PUT /sucursales/{id}`
+- `DELETE /sucursales/{id}`
+- `GET /sucursales/direccion/{direccionId}`
 
 ---
 
