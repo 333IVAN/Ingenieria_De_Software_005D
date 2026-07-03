@@ -153,7 +153,7 @@
         /* Grid de Tarjetas (Home) */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
             margin-top: 35px;
         }
@@ -609,7 +609,7 @@
 </head>
 <body>
 
-        <header class="navbar">
+    <header class="navbar">
         <div class="flex items-center">
             <div class="logo-container w-[120px] h-full flex items-center">
                 <img src="img/logo2.png" alt="Logo">
@@ -619,7 +619,7 @@
 
         <nav class="nav-links">
             <a onclick="mostrarVista('donacion')">Donar</a>
-            <a href="#">Adoptar</a>
+            <a onclick="mostrarVista('adoptar')">Adoptar</a>
             <a onclick="mostrarVista('home')">Información</a>
             <a onclick="mostrarVista('admin')">Panel Admin</a>
         </nav>
@@ -670,6 +670,62 @@
                     
                     <button type="button" onclick="cerrarModalLogin()" class="text-xs text-[#793881] font-medium hover:underline mt-1 text-center block w-full bg-transparent border-0 p-0 cursor-pointer">
                         Continuar como invitado
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-resumen-donacion" class="fixed inset-0 bg-black/50 z-[2000] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-[90%] max-w-md rounded-2xl p-6 shadow-2xl relative transform scale-95 transition-transform duration-300 max-h-[85vh] overflow-y-auto">
+            <h3 class="text-xl font-bold text-[#793881] text-center mb-1">Confirmar Donación</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Verifica los datos de tu aporte antes de enviarlos a la fundación.</p>
+            
+            <div id="resumen-contenido" class="space-y-4 text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-100 max-h-[45vh] overflow-y-auto">
+                </div>
+            
+            <div class="flex gap-3 mt-5">
+                <button type="button" onclick="cerrarModalResumen()" class="w-1/2 border border-purple-300 text-[#793881] p-2.5 rounded-xl text-sm font-semibold hover:bg-purple-50 transition-colors">
+                    Regresar
+                </button>
+                <button type="button" onclick="ejecutarTransaccionDonacion()" class="w-1/2 bg-[#793881] text-white p-2.5 rounded-xl text-sm font-semibold hover:bg-purple-900 transition-colors">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cambiar-estado" class="fixed inset-0 bg-black/50 z-[2000] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-[90%] max-w-md rounded-2xl p-6 shadow-2xl relative transform scale-95 transition-transform duration-300">
+            <button onclick="cerrarModalCambiarEstado()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none">&times;</button>
+            
+            <h3 class="text-xl font-bold text-[#793881] text-center mb-1">Confirmar Cambio de Estado</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Esta acción registrará la actualización en el sistema.</p>
+            
+            <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 text-sm text-gray-700 mb-4">
+                El estado de la donación <strong id="modal-txt-id-donacion" class="text-[#793881]">#0</strong> será cambiado a <strong id="modal-txt-nuevo-estado" class="text-[#793881]">Pendiente</strong>.
+            </div>
+
+            <form id="form-cambiar-estado-modal" onsubmit="ejecutarCambioEstadoReal(event)">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Comentarios de caso(opcional):</label>
+                    <textarea id="modal-comentarios-estado" rows="3" placeholder="Ingresa observaciones del cambio si es necesario..." class="w-full p-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-purple-500 bg-white text-gray-700"></textarea>
+                </div>
+
+                <div class="terms-container mb-5 !mt-0 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <input type="checkbox" id="modal-chk-confirmar" required>
+                    <label for="modal-chk-confirmar" class="text-xs text-gray-600 font-medium cursor-pointer">Confirmar el cambio de estado operacional de esta solicitud</label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 w-full !mt-4">
+                    <button type="button" 
+                            onclick="cerrarModalCambiarEstado()" 
+                            class="w-full text-center border border-purple-300 text-[#793881] py-3 rounded-xl text-sm font-semibold hover:bg-purple-50 transition-colors !mt-0 block">
+                        Regresar
+                    </button>
+                    <button type="submit" 
+                            class="w-full text-center bg-[#793881] text-white py-3 rounded-xl text-sm font-semibold hover:bg-purple-900 transition-colors !mt-0 block">
+                        Continuar
                     </button>
                 </div>
             </form>
@@ -919,6 +975,43 @@
         </div>
     </div>
 
+    <!-- SECCIÓN DE ADOPCIÓN TOTALMENTE RE-ESTRUCTURADA Y DINÁMICA -->
+    <div id="vista-adoptar" style="display: none;">
+        <div class="hero-banner hero-banner-donacion">
+            <div class="hero-content">
+                <h1>Adopta un amigo</h1>
+                <p>Dale una segunda oportunidad a un animal rescatado. Todos nuestros peludos buscan un hogar definitivo lleno de amor y cuidados.</p>
+            </div>
+        </div>
+
+        <main class="main-container">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-purple-100">
+                <div>
+                    <h1 style="font-size: 1.7rem; color: #793881; font-weight: bold; margin-bottom: 5px;">Animales Disponibles</h1>
+                    <p style="color: #6b7280; font-size: 0.95rem;">Conoce a los rescatados de nuestra fundación que están listos para postulación directamente desde la base de datos.</p>
+                </div>
+                <button onclick="cargarMascotasDesdeMicroservicio()" 
+                        type="button"
+                        class="p-3 text-[#793881] hover:bg-purple-50 rounded-xl transition-colors border border-purple-100 shadow-sm flex items-center gap-2 bg-white cursor-pointer font-medium" 
+                        title="Refrescar catálogo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    Sincronizar
+                </button>
+            </div>
+
+            <!-- El Grid ahora se alimenta de forma dinámica -->
+            <div class="cards-grid" id="contenedor-mascotas">
+                <div class="col-span-full text-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p class="text-gray-500 font-medium">Conectando al microservicio de mascotas...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
     <div id="vista-registro" style="display: none;">
         <div class="hero-banner hero-banner-donacion">
             <div class="hero-content">
@@ -932,30 +1025,8 @@
             <p style="color: #ea580c; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px;">⚠️ Todos los campos son obligatorios.</p>
 
             <form id="form-registro-comunidad">
-                <h2>Datos Personales Obligatorios</h2>
-                
+                <h2>Datos de Registro</h2>
                 <div class="grid-2 mb-3">
-                    <div>
-                        <label for="reg-pnombre">Primer Nombre *</label>
-                        <input type="text" id="reg-pnombre" placeholder="Ej: Juan" required>
-                    </div>
-                    <div>
-                        <label for="reg-snombre">Segundo Nombre *</label>
-                        <input type="text" id="reg-snombre" placeholder="Ej: Carlos" required>
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label for="reg-appaterno">Apellido Paterno *</label>
-                        <input type="text" id="reg-appaterno" placeholder="Ej: Pérez" required>
-                    </div>
-                    <div>
-                        <label for="reg-apmaterno">Apellido Materno *</label>
-                        <input type="text" id="reg-apmaterno" placeholder="Ej: González" required>
-                    </div>
-                </div>
-
-                <div class="grid-2">
                     <div>
                         <label for="reg-rut-cuerpo">RUT (Sin puntos ni guión) *</label>
                         <div class="flex items-center gap-2">
@@ -980,13 +1051,10 @@
                         </div>
                     </div>
                     <div>
-                        <label for="reg-telefono">Teléfono *</label>
-                        <input type="tel" id="reg-telefono" placeholder="+56912345678" required minlength="8" maxlength="14">
+                        <label for="reg-email">Email *</label>
+                        <input type="email" id="reg-email" placeholder="correo@ejemplo.com" required>
                     </div>
                 </div>
-
-                <label for="reg-email">Email *</label>
-                <input type="email" id="reg-email" placeholder="correo@ejemplo.com" required>
 
                 <h2>Credenciales de Acceso</h2>
                 <div class="mb-4">
@@ -1005,11 +1073,11 @@
             <aside class="sidebar">
                 <div class="sidebar-title">Menú de Opciones</div>
                 <nav>
-                    <button class="menu-btn active">
+                    <button id="menu-btn-resumen" class="menu-btn active" onclick="cambiarSubvistaAdmin('resumen')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                         Dashboard Resumen
                     </button>
-                    <button class="menu-btn" onclick="alert('Módulo de Donaciones en desarrollo')">
+                    <button id="menu-btn-donaciones" class="menu-btn" onclick="cambiarSubvistaAdmin('donaciones')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                         Admin. de Donaciones
                     </button>
@@ -1025,94 +1093,178 @@
             </aside>
 
             <section class="dashboard-content">
-                <div class="hero-mini">
-                    <h1 class="text-xl font-bold mb-1">¡Hola, Administrador!</h1>
-                    <p class="text-sm opacity-90">Aquí tienes el resumen operacional y de aportes recibidos por la fundación.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card flex flex-col justify-between border-t-4 border-yellow-400">
-                        <div>
-                            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Fondos Totales de la Fundación</div>
-                            <div class="text-3xl font-bold text-[#793881] mt-2">$0 <span class="text-sm font-normal text-gray-400">(CLP)</span></div>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-4">* No se registran fondos monetarios disponibles en la cuenta activa.</p>
+                
+                <div id="subvista-admin-resumen" class="space-y-6">
+                    <div class="hero-mini">
+                        <h1 class="text-xl font-bold mb-1">¡Hola, Administrador!</h1>
+                        <p class="text-sm opacity-90">Aquí tienes el resumen operacional y de aportes recibidos por la fundación.</p>
                     </div>
 
-                    <div class="card flex flex-col justify-between border-t-4 border-purple-400">
-                        <div>
-                            <div class="card-title mb-1">Resumen de Inventario</div>
-                            <p class="text-xs text-gray-500 mb-3">Últimos insumos críticos ingresados</p>
-                            <div class="space-y-1.5 text-sm text-gray-600">
-                                <div class="flex justify-between"><span>🐾 Alimento de Perro Adulto:</span> <strong class="text-gray-800">45 Kilos</strong></div>
-                                <div class="flex justify-between"><span>💊 Antiparasitarios Caninos:</span> <strong class="text-gray-800">12 Unidades</strong></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="card flex flex-col justify-between border-t-4 border-yellow-400">
+                            <div>
+                                <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Fondos Totales de la Fundación</div>
+                                <div class="text-3xl font-bold text-[#793881] mt-2">$0 <span class="text-sm font-normal text-gray-400">(CLP)</span></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-4">* No se registran fondos monetarios disponibles en la cuenta activa.</p>
+                        </div>
+
+                        <div class="card flex flex-col justify-between border-t-4 border-purple-400">
+                            <div>
+                                <div class="card-title mb-1">Resumen de Inventario</div>
+                                <p class="text-xs text-gray-500 mb-3">Últimos insumos críticos ingresados</p>
+                                <div class="space-y-1.5 text-sm text-gray-600">
+                                    <div class="flex justify-between"><span>🐾 Alimento de Perro Adulto:</span> <strong class="text-gray-800">45 Kilos</strong></div>
+                                    <div class="flex justify-between"><span>💊 Antiparasitarios Caninos:</span> <strong class="text-gray-800">12 Unidades</strong></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-2">
+                                <button class="btn-primary w-full text-center py-2" onclick="alert('Abriendo vista completa del inventario...')">Ver Inventario Completo</button>
                             </div>
                         </div>
-                        <div class="mt-4 pt-2">
-                            <button class="btn-primary w-full text-center py-2" onclick="alert('Abriendo vista completa del inventario...')">Ver Inventario Completo</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-4 pb-3 border-b border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <div class="card-title mb-0">Resumen de Donaciones</div>
+                                    <p class="text-xs text-gray-500 mt-0.5">Filtra los flujos de recepción de solicitudes</p>
+                                </div>
+                                <button onclick="cargarDonacionesDesdeBackend()" 
+                                        type="button"
+                                        class="p-2 text-[#793881] hover:bg-purple-50 rounded-xl transition-colors border border-purple-100 shadow-sm flex items-center justify-center bg-white cursor-pointer" 
+                                        title="Refrescar donaciones">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Donante</th>
+                                        <th>RUT</th>
+                                        <th>Tipo Donación</th>
+                                        <th>Detalle / Cantidad</th>
+                                        <th>Fecha Registro</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-donaciones-body">
+                                    <tr><td colspan="6" class="text-center text-gray-400 py-6">Cargando datos operacionales...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-4 pb-3 border-b border-gray-100">
-                        <div>
-                            <div class="card-title mb-0">Resumen de Donaciones</div>
-                            <p class="text-xs text-gray-500 mt-0.5">Filtra los flujos de recepción de solicitudes</p>
+                <div id="subvista-admin-donaciones" class="space-y-6 hidden">
+                    <div class="card">
+                        <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-4 pb-3 border-b border-gray-100">
+                            <div>
+                                <div class="card-title mb-0">Administración General de Donaciones</div>
+                                <p class="text-xs text-gray-500 mt-0.5">Gestión y revisión integral de aportes</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 w-full xl:w-auto justify-start xl:justify-end">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap mr-1">Filtrar por Estado:</span>
+                                <div class="w-full sm:w-auto">
+                                    <select id="filtro-estado-admin" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonacionesPorEstado()">
+                                        <option value="todos" selected>Todos los Estados</option>
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Aprobada">Aprobada</option>
+                                        <option value="Rechazada">Rechazada</option>
+                                        <option value="Cancelada">Cancelada</option>
+                                        <option value="Entregada">Entregada</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-container !height-[450px]">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Donante</th>
+                                        <th>RUT</th>
+                                        <th>Tipo</th>
+                                        <th>Detalle / Cantidad</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-admin-donaciones-completa-body">
+                                    <tr><td colspan="8" class="text-center text-gray-400 py-6">Cargando listado maestro...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="subvista-admin-detalle" class="space-y-6 hidden">
+                    <div class="flex items-center gap-2">
+                        <button onclick="cambiarSubvistaAdmin('donaciones')" class="text-sm font-semibold text-[#793881] hover:underline flex items-center gap-1">
+                            &larr; Volver al listado
+                        </button>
+                    </div>
+
+                    <div class="card border-l-4 border-indigo-500">
+                        <div class="card-title border-b border-gray-100 pb-2 mb-4 flex justify-between items-center">
+                            <span>Ficha de Donación Detallada</span>
+                            <span id="det-id-display" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1 rounded-md font-bold">#0</span>
                         </div>
                         
-                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full xl:w-auto justify-start xl:justify-end">
-                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap mr-1">Filtrar por:</span>
-                            
-                            <div class="w-full sm:w-auto">
-                                <select id="filtro-dia" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonaciones()">
-                                    <option value="todos" selected>Día (Cualquiera)</option>
-                                </select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                            <div class="space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Información del Donante</p>
+                                <p><strong>Nombre Completo:</strong> <span id="det-nombre">Cargando...</span></p>
+                                <p><strong>RUT Asociado:</strong> <span id="det-rut">Cargando...</span></p>
+                                <p><strong>Email:</strong> <span id="det-email">Cargando...</span></p>
                             </div>
 
-                            <div class="w-full sm:w-auto">
-                                <select id="filtro-mes" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonaciones()">
-                                    <option value="todos" selected>Mes (Cualquiera)</option>
-                                    <option value="01">Enero</option>
-                                    <option value="02">Febrero</option>
-                                    <option value="03">Marzo</option>
-                                    <option value="04">Abril</option>
-                                    <option value="05">Mayo</option>
-                                    <option value="06">Junio</option>
-                                    <option value="07">Julio</option>
-                                    <option value="08">Agosto</option>
-                                    <option value="09">Septiembre</option>
-                                    <option value="10">Octubre</option>
-                                    <option value="11">Noviembre</option>
-                                    <option value="12">Diciembre</option>
-                                </select>
-                            </div>
-
-                            <div class="w-full sm:w-auto">
-                                <select id="filtro-ano" class="filter-select w-full sm:w-auto text-sm py-1.5 px-3" onchange="filtrarDonaciones()">
-                                </select>
+                            <div class="space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Datos Técnicos del Aporte</p>
+                                <p><strong>Tipo de Aporte:</strong> <span id="det-tipo">Cargando...</span></p>
+                                <p><strong>Monto / Insumo:</strong> <span id="det-monto-insumo">Cargando...</span></p>
+                                <p><strong>Fecha Registro:</strong> <span id="det-fecha">Cargando...</span></p>
+                                <p><strong>Descripción provista:</strong> <span id="det-descripcion" class="italic text-gray-500">Sin datos</span></p>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Donante</th>
-                                    <th>RUT</th>
-                                    <th>Tipo Donación</th>
-                                    <th>Detalle / Cantidad</th>
-                                    <th>Fecha Registro</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-donaciones-body">
-                                <tr><td colspan="6" class="text-center text-gray-400 py-6">Cargando datos operacionales...</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="mt-6 pt-5 border-t border-gray-100">
+                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <div class="text-sm font-semibold text-gray-700">
+                                        Estado actual: <span id="det-estado-actual" class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 ml-1">Pendiente</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Los cambios se guardarán de forma simulada e inmediata en esta sesión de trabajo.</p>
+                                </div>
+
+                                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                                    <label class="sr-only">Cambiar estado</label>
+                                    <select id="combo-cambiar-estado" class="filter-select text-sm py-2 px-3 bg-white border border-gray-300 rounded-xl">
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Aprobada">Aprobada</option>
+                                        <option value="Rechazada">Rechazada</option>
+                                        <option value="Cancelada">Cancelada</option>
+                                        <option value="Entregada">Entregada</option>
+                                    </select>
+                                    <button onclick="abrirModalCambiarEstado()" type="button" class="bg-[#793881] text-white font-bold text-xs tracking-wider px-4 py-2.5 rounded-xl hover:bg-purple-900 transition-colors cursor-pointer">
+                                        CAMBIAR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+
             </section>
         </main>
     </div>
@@ -1121,7 +1273,7 @@
     <footer class="site-footer">
         <div class="footer-info">
             <h3 class="footer-brand">Kiwi Ayuda</h3>
-            <p id="footer-text-dinamico" class="footer-description">Kiwi Ayuda es una fundación independiente dedicada a la ayuda y rescate de animales en situación vulnerable.</p>
+            <p id="footer-text-dinamico" class="footer-description">Kiwi Ayuda es una fundación independiente dedicada a la ayuda y rescue de animales en situation vulnerable.</p>
             
             <div class="footer-social">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="instagram-icon">
@@ -1148,9 +1300,16 @@
     </a>
 
     <script>
-        // URL base de tu microservicio de donaciones
+        // URL base de tus microservicios
         const API_BASE_URL = 'http://localhost:9090/donaciones';
         const API_USUARIOS_URL = 'http://localhost:9090/usuarios';
+        const API_AUTH_URL = 'http://localhost:9090/auth';
+        const API_MASCOTAS_URL = 'http://localhost:9090/mascotas'; // URL de tu microservicio de mascotas
+
+        // Arreglos en memoria globales
+        let cacheDonacionesGlobal = [];
+        let listaMascotasGlobal = []; // Caché local de mascotas
+        let donacionSeleccionadaActual = null;
 
         // MODAL INTERACTION FUNCTIONS
         function abrirModalLogin() {
@@ -1173,7 +1332,6 @@
 
         function cerrarModalAlClickearAfuera(event) {
             const modalBackground = document.getElementById('modal-login');
-        
             if (event.target === modalBackground) {
                 cerrarModalLogin();
             }
@@ -1184,12 +1342,89 @@
             mostrarVista('registro');
         }
 
-        // Cambiar entre las vistas disponibles: 'home', 'donacion', 'admin', 'registro'
+        /* FUNCIONES PARA EL MODAL DE RESUMEN DE DONACIONES */
+        function abrirModalResumen() {
+            const modal = document.getElementById('modal-resumen-donacion');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function cerrarModalResumen() {
+            const modal = document.getElementById('modal-resumen-donacion');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        /* FUNCIONES PARA EL NUEVO MODAL DE CAMBIO DE ESTADO */
+        function abrirModalCambiarEstado() {
+            if(!donacionSeleccionadaActual) return;
+            
+            const comboEstado = document.getElementById('combo-cambiar-estado').value;
+            document.getElementById('modal-txt-id-donacion').innerText = `#${donacionSeleccionadaActual.id}`;
+            document.getElementById('modal-txt-nuevo-estado').innerText = comboEstado;
+            
+            // Limpiar campos internos
+            document.getElementById('modal-comentarios-estado').value = '';
+            document.getElementById('modal-chk-confirmar').checked = false;
+
+            const modal = document.getElementById('modal-cambiar-estado');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function cerrarModalCambiarEstado() {
+            const modal = document.getElementById('modal-cambiar-estado');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // CONTROLADOR DE SUB-VISTAS DEL PANEL ADMINISTRATIVO
+        function cambiarSubvistaAdmin(subvista) {
+            const res = document.getElementById('subvista-admin-resumen');
+            const don = document.getElementById('subvista-admin-donaciones');
+            const det = document.getElementById('subvista-admin-detalle');
+            
+            const btnRes = document.getElementById('menu-btn-resumen');
+            const btnDon = document.getElementById('menu-btn-donaciones');
+
+            res.classList.add('hidden');
+            don.classList.add('hidden');
+            det.classList.add('hidden');
+            
+            btnRes.classList.remove('active');
+            btnDon.classList.remove('active');
+
+            if(subvista === 'resumen') {
+                res.classList.remove('hidden');
+                btnRes.classList.add('active');
+            } else if (subvista === 'donaciones') {
+                don.classList.remove('hidden');
+                btnDon.classList.add('active');
+                renderizarTablaAdminMaestra(cacheDonacionesGlobal);
+            } else if (subvista === 'detalle') {
+                det.classList.remove('hidden');
+            }
+        }
+
+        // Cambiar entre las vistas principales disponibles
         function mostrarVista(vista) {
             const home = document.getElementById('vista-home');
             const donacion = document.getElementById('vista-donacion');
             const admin = document.getElementById('vista-admin');
             const registro = document.getElementById('vista-registro');
+            const adoptar = document.getElementById('vista-adoptar');
             
             const fText = document.getElementById('footer-text-dinamico');
             const fTitleContact = document.getElementById('footer-titulo-contacto');
@@ -1200,6 +1435,7 @@
             donacion.style.display = 'none';
             admin.style.display = 'none';
             registro.style.display = 'none';
+            if (adoptar) adoptar.style.display = 'none';
 
             if(vista === 'home') {
                 home.style.display = 'block';
@@ -1215,6 +1451,16 @@
                 fP1.innerText = "+56 9 XXXX-XXXX";
                 fP2.innerText = "@kiwi.ayuda";
             } 
+            else if(vista === 'adoptar') {
+                if (adoptar) adoptar.style.display = 'block';
+                fText.innerText = "Encuentra a tu compañero ideal. Dale una segunda oportunidad a un animal rescatado.";
+                fTitleContact.innerText = "Coordinación Adopciones";
+                fP1.innerText = "adopciones@kiwiayuda.org";
+                fP2.innerText = "";
+                
+                // DISPARAR LA CARGA REAL DESDE TU MICROSERVICIO
+                cargarMascotasDesdeMicroservicio();
+            }
             else if(vista === 'registro') {
                 registro.style.display = 'block';
                 fText.innerText = "Regístrate en nuestra comunidad y sé parte del cambio para cientos de animales rescatados.";
@@ -1229,6 +1475,7 @@
                 fP1.innerText = "soporte@kiwiayuda.org";
                 fP2.innerText = "";
                 
+                cambiarSubvistaAdmin('resumen');
                 cargarDonacionesDesdeBackend();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1238,7 +1485,7 @@
         function alternarCamposDonacion() {
             const selectorTipo = document.getElementById('tipo-donacion').value;
             const grupoInsumos = document.getElementById('grupo-insumos');
-            const grupoMonetario = document.getElementById('grupo-monetario');
+            const groupoMonetario = document.getElementById('grupo-monetario');
             
             const tituloSeccion = document.getElementById('titulo-coordinacion-entrega');
             const bloqueInsumos = document.getElementById('bloque-coordinacion-insumos');
@@ -1251,7 +1498,7 @@
 
             if (selectorTipo === 'Monetaria') {
                 grupoInsumos.style.display = 'none';
-                grupoMonetario.style.display = 'block';
+                groupoMonetario.style.display = 'block';
                 tituloSeccion.innerText = "Información de Entrega";
                 bloqueInsumos.style.display = 'none';
                 bloqueMonetaria.style.display = 'block';
@@ -1263,7 +1510,7 @@
                 alternarMetodoPago();
             } else {
                 grupoInsumos.style.display = 'block';
-                grupoMonetario.style.display = 'none';
+                groupoMonetario.style.display = 'none';
                 tituloSeccion.innerText = "Información de Coordinación";
                 bloqueInsumos.style.display = 'block';
                 bloqueMonetaria.style.display = 'none';
@@ -1298,51 +1545,346 @@
             }
         }
 
-        // GET: Consumir el Microservicio para listar en la tabla del Administrador
+        // --- FUNCIÓN FETCH: OBTENER MASCOTAS DESDE TU MICROSERVICIO ---
+         async function cargarMascotasDesdeMicroservicio() {
+            const container = document.getElementById('contenedor-mascotas');
+            container.innerHTML = `<div class="col-span-full text-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p class="text-gray-500 font-medium">Conectando al microservicio de mascotas...</p>
+                </div>`;
+
+            try {
+                const response = await fetch(API_MASCOTAS_URL);
+                if (!response.ok) throw new Error("Error al conectar con el microservicio de mascotas");
+
+                const mascotas = await response.json();
+                listaMascotasGlobal = mascotas; // Guardamos en caché para filtros locales
+                renderizarTarjetasMascotas(mascotas);
+
+            } catch (error) {
+                console.error("Error en microservicio mascotas:", error);
+                container.innerHTML = `<div class="col-span-full text-center text-red-500 py-12 font-semibold">⚠️ Fallo de conexión con la base de datos de mascotas (${API_MASCOTAS_URL}).</div>`;
+            }
+        }
+
+        // --- FUNCIÓN DE RENDERIZADO DINÁMICO DE MASCOTAS ---
+        function renderizarTarjetasMascotas(mascotas) {
+            const contenedor = document.getElementById('contenedor-mascotas');
+            contenedor.innerHTML = ""; 
+
+            if (mascotas.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-500">
+                        No hay mascotas disponibles en este momento.
+                    </div>
+                `;
+                return;
+            }
+
+            mascotas.forEach(mascota => {
+                const nombre = mascota.nombre || "Sin nombre";
+                const especie = mascota.especie || "Desconocida";
+                const edad = mascota.edad ? `${mascota.edad} Años` : "Edad no especificada";
+                const estado = mascota.estado || "DISPONIBLE";
+                const imagenUrl = mascota.imagenUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500';
+
+                // Usamos la misma estructura de CSS nativa 'help-card' de tu diseño original
+                const tarjetaHtml = `
+                    <div class="help-card">
+                        <div class="card-image-wrapper">
+                            <div class="card-floating-title">${nombre}</div>
+                            <img src="${imagenUrl}" alt="${nombre}">
+                            <div class="card-image-fade"></div>
+                        </div>
+                        <div class="card-body flex flex-col justify-between">
+                            <div>
+                                <p class="flex justify-between items-center mb-2 !text-gray-900 font-bold">
+                                    <span>${especie} | ${edad}</span>
+                                    <span class="px-2 py-0.5 text-xs font-semibold rounded ${estado === 'DISPONIBLE' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">
+                                        ${estado}
+                                    </span>
+                                </p>
+                                <p class="text-sm text-gray-500 line-clamp-3 text-left mb-4">
+                                    ${mascota.descripcion || 'Sin descripción adicional cargada en la base de datos.'}
+                                </p>
+                            </div>
+                            <button class="btn-conocer" onclick="solicitarAdopcion(${mascota.id}, '${nombre}')">
+                                Postular a Adopción
+                            </button>
+                        </div>
+                    </div>
+                `;
+                contenedor.insertAdjacentHTML('beforeend', tarjetaHtml);
+            });
+        }
+
+        // --- LÓGICA DE FILTRADO LOCAL ---
+        function filtrarMascotas(tipo) {
+            if (tipo === 'TODOS') {
+                renderizarTarjetasMascotas(listaMascotasGlobal);
+            } else {
+                const filtradas = listaMascotasGlobal.filter(m => m.especie && m.especie.toUpperCase() === tipo.toUpperCase());
+                renderizarTarjetasMascotas(filtradas);
+            }
+        }
+
+        // --- ACCIÓN DE POSTULACIÓN ---
+        function solicitarAdopcion(idMascota, nombreMascota) {
+            alert(`¡Gracias por tu interés! Has iniciado la postulación de adopción para: ${nombreMascota} (ID: ${idMascota}). El equipo de la fundación revisará tus antecedentes.`);
+        }
+
+        // GET: Consumir el Microservicio y cargar listados unificados con resolución de usuarios
         async function cargarDonacionesDesdeBackend() {
-            const tbody = document.getElementById('tabla-donaciones-body');
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-purple-600 py-6 font-medium animate-pulse">Cargando registros desde el backend de Spring Boot...</td></tr>`;
+            const tbodyResumen = document.getElementById('tabla-donaciones-body');
+            tbodyResumen.innerHTML = `<tr><td colspan="6" class="text-center text-purple-600 py-6 font-medium animate-pulse">Cargando registros...</td></tr>`;
 
             try {
                 const response = await fetch(API_BASE_URL);
                 if (!response.ok) throw new Error("Error en la respuesta del servidor");
                 
                 const donaciones = await response.json();
-                tbody.innerHTML = '';
+                
+                // Mapear registros y poblar con un estado 'Pendiente' por defecto si no existe
+                const promesasProcesamiento = donaciones.map(async (item) => {
+                    let donante = "Donante Anónimo";
+                    let rut = "Sin RUT";
+                    let email = "Sin registro";
 
-                if (donaciones.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-400 py-6">No hay registros de donaciones en la base de datos.</td></tr>`;
+                    if (item.usuarioId) {
+                        try {
+                            const resUser = await fetch(`${API_USUARIOS_URL}/${item.usuarioId}`);
+                            if (resUser.ok) {
+                                const usuario = await resUser.json();
+                                donante = `${usuario.pnombre} ${usuario.appaterno}`;
+                                rut = usuario.dv ? `${usuario.rut}-${usuario.dv}` : `${usuario.rut}`;
+                                email = usuario.correo || "Sin correo";
+                            }
+                        } catch (userError) {
+                            console.error(`Error de usuario ID ${item.usuarioId}:`, userError);
+                        }
+                    }
+
+                    // Conservar o asignar estado simulado en memoria
+                    const estadoExistente = cacheDonacionesGlobal.find(d => d.id === item.id);
+                    const estadoAsignado = estadoExistente ? estadoExistente.estadoSimulado : "Pendiente";
+
+                    return {
+                        ...item,
+                        nombreDonante: donante,
+                        rutDonante: rut,
+                        emailDonante: email,
+                        estadoSimulado: estadoAsignado
+                    };
+                });
+
+                cacheDonacionesGlobal = await Promise.all(promesasProcesamiento);
+                
+                // 1. Renderizar tabla en la vista de Resumen
+                tbodyResumen.innerHTML = '';
+                if (cacheDonacionesGlobal.length === 0) {
+                    tbodyResumen.innerHTML = `<tr><td colspan="6" class="text-center text-gray-400 py-6">No hay registros de donaciones.</td></tr>`;
                     return;
                 }
 
-                donaciones.forEach(item => {
-                    const donante = item.usuario ? `${item.usuario.pnombre} ${item.usuario.appaterno}` : "Donante Anónimo";
-                    const rut = item.usuario ? `${item.usuario.rut}-${item.usuario.dv}` : "Sin RUT";
+                cacheDonacionesGlobal.forEach(item => {
                     const tipo = item.cantidad ? "Insumos" : "Monetaria";
                     const detalle = item.cantidad ? `${item.descripcion || 'Insumo'} (${item.cantidad})` : `$${item.monto || 0}`;
-                    const fecha = item.fechadonacion ? item.fechadonacion : 'Sin fecha';
-                    const estado = "Recibido";
-
-                    tbody.innerHTML += `
+                    const fecha = item.fechadonacion || 'Sin fecha';
+                    
+                    tbodyResumen.innerHTML += `
                         <tr>
-                            <td class="font-medium text-gray-900">${donante}</td>
-                            <td class="text-gray-500">${rut}</td>
+                            <td class="font-medium text-gray-900">${item.nombreDonante}</td>
+                            <td class="text-gray-500">${item.rutDonante}</td>
                             <td><span class="px-2 py-1 rounded-md text-xs font-semibold bg-purple-50 text-[#793881]">${tipo}</span></td>
                             <td>${detalle}</td>
                             <td class="text-gray-500">${fecha}</td>
-                            <td><span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">${estado}</span></td>
+                            <td><span class="px-2.5 py-1 rounded-full text-xs font-medium ${obtenerEstiloEstado(item.estadoSimulado)}">${item.estadoSimulado}</span></td>
                         </tr>
                     `;
                 });
+
             } catch (error) {
-                console.error("Error al buscar las donaciones:", error);
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6 font-semibold">⚠️ Hubo un error de comunicación con tu API de Spring Boot. Verifica la consola o la clase WebClientConfig.</td></tr>`;
+                console.error("Error general de carga:", error);
+                tbodyResumen.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6 font-semibold">⚠️ Error de comunicación con la API.</td></tr>`;
             }
         }
 
-        // POST: Enviar formulario público de donaciones hacia Spring Boot (Invitados)
-        document.getElementById('form-solicitud-donacion').addEventListener('submit', async function(e) {
+        // ENCARGADO DE RENDERIZAR LA TABLA MAESTRA CON EL BOTÓN "DETALLES"
+        function renderizarTablaAdminMaestra(datos) {
+            const tbodyMaestro = document.getElementById('tabla-admin-donaciones-completa-body');
+            tbodyMaestro.innerHTML = '';
+
+            if (datos.length === 0) {
+                tbodyMaestro.innerHTML = `<tr><td colspan="8" class="text-center text-gray-400 py-6">No se encontraron registros coincidentes.</td></tr>`;
+                return;
+            }
+
+            datos.forEach(item => {
+                const tipo = item.cantidad ? "Insumos" : "Monetaria";
+                const detalle = item.cantidad ? `${item.descripcion || 'Insumo'} (${item.cantidad})` : `$${item.monto || 0}`;
+                const fecha = item.fechadonacion || 'Sin fecha';
+
+                tbodyMaestro.innerHTML += `
+                    <tr>
+                        <td class="font-bold text-gray-400">#${item.id}</td>
+                        <td class="font-medium text-gray-900">${item.nombreDonante}</td>
+                        <td class="text-gray-500">${item.rutDonante}</td>
+                        <td><span class="px-2 py-1 rounded-md text-xs font-semibold bg-purple-50 text-[#793881]">${tipo}</span></td>
+                        <td>${detalle}</td>
+                        <td class="text-gray-500">${fecha}</td>
+                        <td><span class="px-2.5 py-1 rounded-full text-xs font-bold ${obtenerEstiloEstado(item.estadoSimulado)}">${item.estadoSimulado}</span></td>
+                        <td>
+                            <button onclick="verDetalleDonacion(${item.id})" type="button" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer">
+                                Detalles
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // FILTRADO EXCLUSIVO POR ESTADO EN LA VISTA COMPLETA
+        function filtrarDonacionesPorEstado() {
+            const estadoFiltro = document.getElementById('filtro-estado-admin').value;
+            if (estadoFiltro === 'todos') {
+                renderizarTablaAdminMaestra(cacheDonacionesGlobal);
+            } else {
+                const filtrados = cacheDonacionesGlobal.filter(d => d.estadoSimulado === estadoFiltro);
+                renderizarTablaAdminMaestra(filtrados);
+            }
+        }
+
+        // CARGAR LA SUB-VISTA DE DETALLE DE LA DONACIÓN
+        function verDetalleDonacion(id) {
+            const item = cacheDonacionesGlobal.find(d => d.id === id);
+            if(!item) return;
+
+            donacionSeleccionadaActual = item;
+
+            document.getElementById('det-id-display').innerText = `#${item.id}`;
+            document.getElementById('det-nombre').innerText = item.nombreDonante;
+            document.getElementById('det-rut').innerText = item.rutDonante;
+            document.getElementById('det-email').innerText = item.emailDonante;
+            
+            const tipo = item.cantidad ? "Insumos" : "Monetaria";
+            document.getElementById('det-tipo').innerText = tipo;
+            document.getElementById('det-monto-insumo').innerText = item.cantidad ? `${item.cantidad} unidades` : `$${item.monto || 0} CLP`;
+            document.getElementById('det-fecha').innerText = item.fechadonacion || 'Sin fecha';
+            document.getElementById('det-descripcion').innerText = item.descripcion || 'Sin observaciones adicionales';
+            
+            // Cargar estado e igualar el combo box selector
+            actualizarInterfazEstadoFicha(item.estadoSimulado);
+
+            cambiarSubvistaAdmin('detalle');
+        }
+
+        // ACCIÓN DE CONFIRMACIÓN DEL MODAL DE ESTADOS
+        function ejecutarCambioEstadoReal(e) {
             e.preventDefault();
+            if(!donacionSeleccionadaActual) return;
+
+            const nuevoEstado = document.getElementById('modal-txt-nuevo-estado').innerText;
+            
+            // Actualizar en el objeto global en memoria de forma simulada
+            donacionSeleccionadaActual.estadoSimulado = nuevoEstado;
+            
+            // Actualizar la interfaz gráfica de la ficha técnica
+            actualizarInterfazEstadoFicha(nuevoEstado);
+
+            cerrarModalCambiarEstado();
+            alert(`¡Estado actualizado!\nLa donación #${donacionSeleccionadaActual.id} se encuentra ahora en estado: ${nuevoEstado}`);
+        }
+
+        function actualizarInterfazEstadoFicha(estado) {
+            const badge = document.getElementById('det-estado-actual');
+            badge.innerText = estado;
+            badge.className = `px-2.5 py-1 rounded-full text-xs font-bold ml-1 ${obtenerEstiloEstado(estado)}`;
+            document.getElementById('combo-cambiar-estado').value = estado;
+        }
+
+        function obtenerEstiloEstado(estado) {
+            switch(estado) {
+                case 'Aprobada': return 'bg-green-100 text-green-800';
+                case 'Rechazada': return 'bg-red-100 text-red-800';
+                case 'Cancelada': return 'bg-gray-100 text-gray-800';
+                case 'Entregada': return 'bg-blue-100 text-blue-800';
+                default: return 'bg-amber-100 text-amber-800'; // Pendiente
+            }
+        }
+
+        // INTERCEPTOR: En lugar de enviar directo, muestra el modal de resumen
+        document.getElementById('form-solicitud-donacion').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Mapeo estético de datos básicos
+            const pnombre = document.getElementById('pnombre').value.trim();
+            const snombre = document.getElementById('snombre').value.trim();
+            const appaterno = document.getElementById('appaterno').value.trim();
+            const apmaterno = document.getElementById('apmaterno').value.trim();
+            const nombreCompleto = `${pnombre} ${snombre} ${appaterno} ${apmaterno}`.replace(/\s+/g, ' ').trim();
+            
+            const rut = `${document.getElementById('rut-cuerpo').value}-${document.getElementById('rut-dv').value}`;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const tipoDonacion = document.getElementById('tipo-donacion').value;
+            const descripcion = document.getElementById('descripcion').value;
+
+            let bloqueDetalleAporte = '';
+
+            if (tipoDonacion === 'Insumos') {
+                const comboInsumo = document.getElementById('insumo-id');
+                const textoInsumo = comboInsumo.options[comboInsumo.selectedIndex].text;
+                const cantidad = document.getElementById('cantidad').value;
+                
+                bloqueDetalleAporte = `
+                    <p class="text-xs font-bold text-purple-800 uppercase mt-2">Detalles del Aporte (Insumos)</p>
+                    <p><strong>Tipo:</strong> Insumos de Apoyo</p>
+                    <p><strong>Insumo seleccionado:</strong> ${textoInsumo}</p>
+                    <p><strong>Cantidad:</strong> ${cantidad}</p>
+                `;
+            } else {
+                const monto = document.getElementById('monto-donacion').value;
+                const metodo = document.getElementById('metodo-pago').value;
+                let masInfoMetodo = '';
+                
+                if (metodo === 'Transferencia Directa') {
+                    masInfoMetodo = 'Transferencia Bancaria (Comprobante Adjunto)';
+                } else {
+                    const sucursal = document.getElementById('sucursal-seleccionada').value;
+                    masInfoMetodo = `Entrega presencial en: ${sucursal}`;
+                }
+
+                bloqueDetalleAporte = `
+                    <p class="text-xs font-bold text-purple-800 uppercase mt-2">Detalles del Aporte (Económico)</p>
+                    <p><strong>Tipo:</strong> Donación Monetaria</p>
+                    <p><strong>Monto:</strong> $${monto} CLP</p>
+                    <p><strong>Modalidad:</strong> ${masInfoMetodo}</p>
+                `;
+            }
+
+            // Construir el contenedor del resumen
+            document.getElementById('resumen-contenido').innerHTML = `
+                <div>
+                    <p class="text-xs font-bold text-purple-800 uppercase">Datos del Donante</p>
+                    <p><strong>Nombre Completo:</strong> ${nombreCompleto}</p>
+                    <p><strong>RUT:</strong> ${rut}</p>
+                    <p><strong>Teléfono:</strong> ${telefono}</p>
+                    <p><strong>Correo Electrónico:</strong> ${email}</p>
+                </div>
+                <hr class="border-gray-200">
+                <div>
+                    ${bloqueDetalleAporte}
+                    <p class="mt-1"><strong>Descripción/Comentario:</strong> ${descripcion}</p>
+                </div>
+            `;
+
+            abrirModalResumen();
+        });
+
+        // POST: Esta función ahora se ejecuta únicamente si se presiona "Confirmar" en el Modal
+        async function ejecutarTransaccionDonacion() {
+            cerrarModalResumen();
+            
             const tipoDonacion = document.getElementById('tipo-donacion').value;
             const cuerpoRutLimpio = document.getElementById('rut-cuerpo').value.replace(/[^0-9]/g, '');
             const telefonoLimpio = document.getElementById('telefono').value.replace(/[^0-9]/g, '');
@@ -1410,49 +1952,72 @@
                 console.error("Error en la transacción:", error);
                 alert(`Ocurrió un problema:\n${error.message}`);
             }
-        });
+        }
 
         // POST: Enviar formulario de REGISTRO DE COMUNIDAD (Campos 100% Obligatorios)
         document.getElementById('form-registro-comunidad').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const cuerpoRutLimpio = document.getElementById('reg-rut-cuerpo').value.replace(/[^0-9]/g, '');
-            const telefonoLimpio = document.getElementById('reg-telefono').value.replace(/[^0-9]/g, '');
+            const cuerpoRutLimpio = document
+                .getElementById('reg-rut-cuerpo')
+                .value
+                .replace(/[^0-9]/g, '');
 
-            const payloadUsuarioComunidad = {
-                rut: cuerpoRutLimpio,
-                dv: document.getElementById('reg-rut-dv').value.trim(),
-                pnombre: document.getElementById('reg-pnombre').value.trim(),
-                snombre: document.getElementById('reg-snombre').value.trim(), // Requerido de forma estricta
-                appaterno: document.getElementById('reg-appaterno').value.trim(),
-                apmaterno: document.getElementById('reg-apmaterno').value.trim(), // Requerido de forma estricta
-                telefono: telefonoLimpio,
-                correo: document.getElementById('reg-email').value.trim(),
-                direccionId: 1, 
-                contrasena: document.getElementById('reg-contrasena').value // Requerido de forma estricta
+            const dv = document
+                .getElementById('reg-rut-dv')
+                .value
+                .trim();
+
+            const payloadRegistro = {
+                rut: cuerpoRutLimpio + "-" + dv,
+                correo: document
+                    .getElementById('reg-email')
+                    .value
+                    .trim(),
+                contrasena: document
+                    .getElementById('reg-contrasena')
+                    .value
             };
 
-            console.log("JSON enviado a /usuarios (Registro Comunidad):", JSON.stringify(payloadUsuarioComunidad));
+            console.log(
+                "JSON enviado a /auth/register:",
+                JSON.stringify(payloadRegistro)
+            );
 
             try {
-                const response = await fetch(API_USUARIOS_URL, {
+                const response = await fetch(API_AUTH_URL + "/register", {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(payloadUsuarioComunidad)
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payloadRegistro)
                 });
 
                 if (response.ok || response.status === 201) {
-                    const usuarioCreado = await response.json();
-                    alert(`¡Registro Exitoso!\nBienvenido/a a la comunidad Kiwi Ayuda.\nTu cuenta ha sido creada con el ID: ${usuarioCreado.id} y asignada con perfil de USUARIO REGISTRADO.`);
-                    document.getElementById('form-registro-comunidad').reset();
+                    const mensaje = await response.text();
+                    alert(
+                        `¡Registro Exitoso!\n\n${mensaje}`
+                    );
+                    document
+                        .getElementById('form-registro-comunidad')
+                        .reset();
                     mostrarVista('home');
                 } else {
                     const errorText = await response.text();
-                    throw new Error(`Error en el servidor de Spring Boot: ${errorText}`);
+                    throw new Error(
+                        `Error en service-auth: ${errorText}`
+                    );
                 }
+
             } catch (error) {
-                console.error("Error al registrar en la comunidad:", error);
-                alert(`No se pudo completar el registro:\n${error.message}`);
+                console.error(
+                    "Error al registrar en auth:",
+                    error
+                );
+                alert(
+                    `No se pudo completar el registro:\n${error.message}`
+                );
             }
         });
     </script>
